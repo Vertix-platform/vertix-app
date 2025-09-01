@@ -2,7 +2,8 @@ import { useCallback, useEffect } from 'react';
 import { usePrivy } from '@privy-io/react-auth';
 import { useAuthStore } from '@/store/auth-store';
 import { apiClient } from '@/lib/api';
-import type { RegisterRequest, LoginRequest, ConnectWalletRequest, PrivyUser } from '@/types/auth';
+import type { RegisterRequest, LoginRequest, ConnectWalletRequest, PrivyUser, ApiResponse, UserResponse } from '@/types/auth';
+import { useRouter } from 'next/navigation';
 
 export const useAuth = () => {
   const {
@@ -14,6 +15,8 @@ export const useAuth = () => {
     authenticated, user: privyUserData, login: privyLogin, logout: privyLogout, ready,
     signMessage,
   } = usePrivy();
+
+  const router = useRouter();
 
   // Sync Privy user with our store
   useEffect(() => {
@@ -50,7 +53,7 @@ export const useAuth = () => {
         nonce: nonceResponse.data.nonce,
       };
 
-      const response = await apiClient.connectWallet(connectRequest);
+      const response: ApiResponse<UserResponse> = await apiClient.connectWallet(connectRequest);
       if (!response.success || !response.data) {
         throw new Error(response.error || 'Failed to connect wallet');
       }
@@ -105,25 +108,27 @@ export const useAuth = () => {
 
       const response = await apiClient.login(data);
       if (!response.success || !response.data) {
-        throw new Error(response.error || 'Login failed');
+        // Handle specific error cases with better UX
+        if (response.error?.includes('Too many active sessions')) {
+          console.log('You have too many active sessions. Please log out from other devices or contact support to reset your sessions.');
+        }
+        console.log(response.error || 'Login failed. Please check your credentials and try again.');
       }
 
       // Get user profile after successful login
       const profileResponse = await apiClient.getUserProfile();
       if (profileResponse.success && profileResponse.data) {
         login(profileResponse.data, {
-          access_token: response.data.access_token,
-          refresh_token: response.data.refresh_token,
+          access_token: response.data?.access_token || '',
+          refresh_token: response.data?.refresh_token || '',
         });
       }
 
-      return response.data;
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Login failed';
-      setError(errorMessage);
-      throw err;
-    } finally {
       setLoading(false);
+    } catch (err) {
+      setLoading(false);
+      setError(err instanceof Error ? err.message : 'An unexpected error occurred');
+      throw err;
     }
   }, [login, setLoading, setError, clearError]);
 
@@ -146,14 +151,8 @@ export const useAuth = () => {
         throw new Error(authUrlResponse.error || 'Failed to get Google auth URL');
       }
 
-      // Store the current URL to redirect back after OAuth
-      const currentUrl = window.location.href;
-      sessionStorage.setItem('oauth_redirect_url', currentUrl);
-
-      console.log('Redirecting to Google OAuth URL:', authUrlResponse.data.auth_url);
-
       // Redirect to Google OAuth
-      window.location.href = authUrlResponse.data.auth_url;
+      router.push(authUrlResponse.data.auth_url);
     } catch (err) {
       console.error('Google OAuth error:', err);
       const errorMessage = err instanceof Error ? err.message : 'Google OAuth failed';
@@ -200,6 +199,32 @@ export const useAuth = () => {
     privyLogout();
   }, [logout, privyLogout]);
 
+  // Handle wallet disconnection
+  const disconnectWallet = useCallback(async () => {
+    try {
+      setLoading(true);
+      clearError();
+
+      // Clear wallet data from backend (if needed)
+      // For now, we'll just clear the local state
+      // You can add a backend call here if needed to update user's wallet status
+
+      // Clear Privy wallet connection
+      await privyLogout();
+
+      // Clear local wallet data
+      // This assumes you have a way to clear wallet data from the store
+      // You might need to add this to your auth store
+
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Wallet disconnection failed';
+      setError(errorMessage);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }, [privyLogout, setLoading, setError, clearError]);
+
   return {
     // State
     user,
@@ -216,6 +241,7 @@ export const useAuth = () => {
     loginWithGoogle,
     handleGoogleCallback,
     connectWallet,
+    disconnectWallet,
     logout: handleLogout,
     loginWithPrivy: privyLogin,
     clearError,

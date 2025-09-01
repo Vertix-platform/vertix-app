@@ -3,9 +3,7 @@ import type {
   RegisterRequest,
   LoginRequest,
   LoginResponse,
-  RefreshTokenRequest,
   RefreshTokenResponse,
-  RevokeTokenRequest,
   RevokeTokenResponse,
   ConnectWalletRequest,
   NonceRequest,
@@ -14,6 +12,16 @@ import type {
   UpdateProfileRequest,
   ApiResponse,
 } from '@/types/auth';
+import type {
+  MintNftRequest,
+  MintNftResponse,
+  InitiateSocialMediaNftMintRequest,
+  InitiateSocialMediaNftMintResponse,
+  MintSocialMediaNftRequest,
+  MintSocialMediaNftResponse,
+  NetworkInfo,
+  Collection,
+} from '@/types/listings';
 
 // Cookie utility functions
 const getCookie = (name: string): string | null => {
@@ -64,9 +72,10 @@ const removeRefreshToken = (): void => {
 // Generic request function with automatic token refresh
 const makeRequest = async <T>(
   endpoint: string,
-  options: RequestInit = {}
+  options: RequestInit = {},
+  queryParams: string = ''
 ): Promise<ApiResponse<T>> => {
-  const url = `${authConfig.RUST_BACKEND_URL}${endpoint}`;
+  const url = `${authConfig.RUST_BACKEND_URL}${endpoint}${queryParams}`;
 
   const defaultHeaders: Record<string, string> = {
     'Content-Type': 'application/json',
@@ -80,6 +89,7 @@ const makeRequest = async <T>(
 
   const config: RequestInit = {
     headers: defaultHeaders,
+    credentials: 'include',
     ...options,
   };
 
@@ -165,6 +175,7 @@ const refreshTokens = async (): Promise<boolean> => {
   } catch (error) {
     removeAccessToken();
     removeRefreshToken();
+    console.error('Refresh tokens failed', error);
     return false;
   }
 };
@@ -247,9 +258,12 @@ export const authApi = {
   },
 
   googleCallback: async (code: string, state: string): Promise<ApiResponse<LoginResponse>> => {
-    const response = await makeRequest<LoginResponse>(`${API_ENDPOINTS.AUTH.GOOGLE_CALLBACK}?code=${encodeURIComponent(code)}&state=${encodeURIComponent(state)}`, {
+    const response = await makeRequest<LoginResponse>(API_ENDPOINTS.AUTH.GOOGLE_CALLBACK, {
       method: 'GET',
-    });
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }, `?code=${encodeURIComponent(code)}&state=${encodeURIComponent(state)}`);
 
     if (response.success && response.data) {
       setAccessToken(response.data.access_token);
@@ -269,6 +283,45 @@ export const userApi = {
   updateProfile: async (data: UpdateProfileRequest): Promise<ApiResponse<UserResponse>> => {
     return makeRequest<UserResponse>(API_ENDPOINTS.USER.UPDATE_PROFILE, {
       method: 'PUT',
+      body: JSON.stringify(data),
+    });
+  },
+};
+
+// Contract API functions
+export const contractApi = {
+  getNetworkInfo: async (): Promise<ApiResponse<NetworkInfo>> => {
+    return makeRequest<NetworkInfo>(API_ENDPOINTS.CONTRACT.NETWORK_INFO);
+  },
+
+  checkConnection: async (): Promise<ApiResponse<boolean>> => {
+    return makeRequest<boolean>(API_ENDPOINTS.CONTRACT.CHECK_CONNECTION);
+  },
+
+  mintNft: async (data: MintNftRequest): Promise<ApiResponse<MintNftResponse>> => {
+    return makeRequest<MintNftResponse>(API_ENDPOINTS.CONTRACT.MINT_NFT, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
+
+  initiateSocialMediaNftMint: async (data: InitiateSocialMediaNftMintRequest): Promise<ApiResponse<InitiateSocialMediaNftMintResponse>> => {
+    return makeRequest<InitiateSocialMediaNftMintResponse>(API_ENDPOINTS.CONTRACT.INITIATE_SOCIAL_MEDIA_NFT_MINT, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
+
+  mintSocialMediaNft: async (data: MintSocialMediaNftRequest): Promise<ApiResponse<MintSocialMediaNftResponse>> => {
+    return makeRequest<MintSocialMediaNftResponse>(API_ENDPOINTS.CONTRACT.MINT_SOCIAL_MEDIA_NFT, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
+
+  mintNftToCollection: async (data: MintNftRequest): Promise<ApiResponse<MintNftResponse>> => {
+    return makeRequest<MintNftResponse>(API_ENDPOINTS.CONTRACT.MINT_NFT_TO_COLLECTION, {
+      method: 'POST',
       body: JSON.stringify(data),
     });
   },
@@ -301,7 +354,6 @@ export const authUtils = {
   refreshTokens,
 };
 
-// Legacy export for backward compatibility
 export const apiClient = {
   register: authApi.register,
   login: authApi.login,
@@ -314,6 +366,12 @@ export const apiClient = {
   googleCallback: authApi.googleCallback,
   getUserProfile: userApi.getProfile,
   updateUserProfile: userApi.updateProfile,
+  getNetworkInfo: contractApi.getNetworkInfo,
+  checkConnection: contractApi.checkConnection,
+  mintNft: contractApi.mintNft,
+  initiateSocialMediaNftMint: contractApi.initiateSocialMediaNftMint,
+  mintSocialMediaNft: contractApi.mintSocialMediaNft,
+  mintNftToCollection: contractApi.mintNftToCollection,
   logout: authUtils.logout,
   isAuthenticated: authUtils.isAuthenticated,
   getAccessToken: authUtils.getAccessToken,

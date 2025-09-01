@@ -1,7 +1,5 @@
 'use client';
 
-import { PrivyProvider } from '@privy-io/react-auth';
-import { PRIVY_CONFIG } from '@/lib/config';
 import { useAuthStore } from '@/store/auth-store';
 import { useEffect } from 'react';
 
@@ -17,14 +15,5 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     checkAuth();
   }, [checkAuth]);
 
-  return (
-    <PrivyProvider
-      key="privy-provider"
-      appId={PRIVY_CONFIG.appId}
-      clientId={PRIVY_CONFIG.clientId}
-      config={PRIVY_CONFIG.config}
-    >
-      {children}
-    </PrivyProvider>
-  );
+  return <>{children}</>;
 };

@@ -58,16 +58,16 @@ export default function GoogleCallbackPage() {
 
   return (
     <div className="flex items-center justify-center p-4 h-full min-h-screen">
-      <Card className="w-full max-w-md">
-        <CardHeader className="text-center">
-          <CardTitle>Google Sign In</CardTitle>
-          <CardDescription>
+      <div className="w-full max-w-md">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold">Google Sign In</h1>
+          <p className="text-sm text-muted-foreground">
             {status === 'loading' && 'Completing your sign in...'}
             {status === 'success' && 'Successfully signed in!'}
             {status === 'error' && 'Sign in failed'}
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="text-center space-y-4">
+          </p>
+        </div>
+        <div className="text-center space-y-4">
           {status === 'loading' && (
             <div className="flex flex-col items-center space-y-4">
               <Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -107,8 +107,8 @@ export default function GoogleCallbackPage() {
               </div>
             </div>
           )}
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 }

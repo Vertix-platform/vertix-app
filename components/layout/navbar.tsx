@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/hooks/use-auth';
 import { usePrivy } from '@privy-io/react-auth';
 import { Button } from '@/components/ui/button';
+import { NetworkSelector } from '@/components/ui/network-selector';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,16 +17,15 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import {
-  User,
-  Wallet,
   LogOut,
   Settings,
-  Plus,
   Menu,
   X,
   Search,
   Bell,
 } from 'lucide-react';
+import { RiUserLine, RiWallet3Line } from "@remixicon/react";
+
 // import { ThemeToggle } from '@/components/theme/theme-toggle';
 import { formatAddress } from '@/lib/custom-utils';
 import toast from 'react-hot-toast';
@@ -39,10 +39,11 @@ import {
 
 
 export const Navbar = () => {
-  const { user, isAuthenticated, logout, connectWallet } = useAuth();
+  const { user, isAuthenticated, logout, connectWallet, disconnectWallet } = useAuth();
   const { login, logout: privyLogout, authenticated, ready, user: privyUser } = usePrivy();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isConnectingWallet, setIsConnectingWallet] = useState(false);
+  const [isDisconnectingWallet, setIsDisconnectingWallet] = useState(false);
   const pathname = usePathname();
 
   const isActive = (href: string) => {
@@ -84,6 +85,20 @@ export const Navbar = () => {
     }
   };
 
+  const handleDisconnectWallet = async () => {
+    try {
+      setIsDisconnectingWallet(true);
+      await disconnectWallet();
+      await privyLogout();
+      toast.success('Wallet disconnected successfully!');
+    } catch (err) {
+      toast.error('Failed to disconnect wallet');
+      console.error(err);
+    } finally {
+      setIsDisconnectingWallet(false);
+    }
+  };
+
   const getUserDisplay = () => {
     // Only show user display if user has actually logged in/signed up
     if (!user || !isAuthenticated || (!user.email && !user.wallet_address)) return null;
@@ -91,7 +106,7 @@ export const Navbar = () => {
     if (user.wallet_address) {
       return (
         <div className="flex items-center gap-2">
-          <Wallet className="h-4 w-4" />
+          <RiWallet3Line className="h-4 w-4" />
           <span className="hidden sm:inline">
             {formatAddress(user.wallet_address)}
           </span>
@@ -114,12 +129,33 @@ export const Navbar = () => {
   const getWalletButton = () => {
     if (authenticated && privyUser?.wallet?.address) {
       return (
-        <Button variant="outline" size="sm" className="flex items-center gap-2">
-          <Wallet className="h-4 w-4" />
-          <span className="hidden sm:inline">
-            {formatAddress(privyUser.wallet.address)}
-          </span>
-        </Button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" size="sm" className="flex items-center gap-2">
+              <RiWallet3Line className="h-4 w-4" />
+              <span className="hidden sm:inline">
+                {formatAddress(privyUser.wallet.address)}
+              </span>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-56">
+            <DropdownMenuLabel>Wallet</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem disabled>
+              <RiWallet3Line className="h-4 w-4 mr-2" />
+              {formatAddress(privyUser.wallet.address)}
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              onClick={handleDisconnectWallet}
+              disabled={isDisconnectingWallet}
+              className="text-destructive focus:text-destructive"
+            >
+              <LogOut className="h-4 w-4 mr-2" />
+              {isDisconnectingWallet ? 'Disconnecting...' : 'Disconnect Wallet'}
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       );
     }
 
@@ -131,21 +167,21 @@ export const Navbar = () => {
         disabled={isConnectingWallet || !ready}
         className="flex items-center gap-2"
       >
-        <Wallet className="h-4 w-4" />
+        <RiWallet3Line className="h-4 w-4" />
         {isConnectingWallet ? 'Connecting...' : 'Connect Wallet'}
       </Button>
     );
   };
 
   return (
-    <nav className="bg-card/50 backdrop-blur supports-[backdrop-filter]:bg-card/50 sticky top-0 z-50">
-      <div className="container mx-auto px-4">
+    <nav className="bg-background/50 backdrop-blur supports-[backdrop-filter]:bg-background/50 sticky top-0 z-50">
+      <div className="px-4">
         <div className="flex items-center justify-between h-16">
           <Link href="/" className="flex items-center gap-2">
             <Image src={Logo} alt="Vertix" width={100} height={100} className='w-20 h-20' />
           </Link>
 
-          <div className="hidden md:flex items-center gap-6">
+          <div className="hidden xl:flex items-center gap-6">
             <div className="relative w-64">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
@@ -171,20 +207,24 @@ export const Navbar = () => {
             </div>
 
             {isAuthenticated && user && (user.email || user.wallet_address) && (
-              <Button variant="ghost" size="sm" className="relative">
-                <Bell className="h-5 w-5" />
-                <span className="absolute -top-1 -right-1 h-3 w-3 bg-red-500 rounded-full text-xs text-white flex items-center justify-center">
-                  {" "}
-                </span>
+              <Button asChild variant="ghost" size="sm" className="relative">
+                <Link href="/activity">
+                  <Bell className="h-5 w-5" />
+                  {/* <span className="absolute -top-1 -right-1 h-3 w-3 bg-red-500 rounded-full text-xs text-white flex items-center justify-center">
+                    {" "}
+                  </span> */}
+                </Link>
               </Button>
             )}
+
+            <NetworkSelector />
 
             {getWalletButton()}
 
             {isAuthenticated && user && (user.email || user.wallet_address) ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="sm" className="flex items-center gap-2">
+                  <Button variant="secondary" size="sm" className=" cursor-pointer flex items-center gap-2">
                     {getUserDisplay()}
                   </Button>
                 </DropdownMenuTrigger>
@@ -193,14 +233,8 @@ export const Navbar = () => {
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
                     <Link href="/profile">
-                      <User className="h-4 w-4 mr-2" />
+                      <RiUserLine className="h-4 w-4 mr-2" />
                       Profile
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link href="/my-listings">
-                      <Plus className="h-4 w-4 mr-2" />
-                      My Listings
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
@@ -217,7 +251,7 @@ export const Navbar = () => {
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <Button asChild size="sm">
+              <Button asChild size="sm" className='cursor-pointer'>
                 <Link href="/login">
                   Get Started
                 </Link>
@@ -231,7 +265,7 @@ export const Navbar = () => {
           <Button
             variant="ghost"
             size="sm"
-            className="md:hidden"
+            className="xl:hidden"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
             {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -242,7 +276,7 @@ export const Navbar = () => {
         <AnimatePresence>
           {isMobileMenuOpen && (
             <motion.div
-              className="fixed inset-0 z-50 md:hidden"
+              className="fixed inset-0 z-50 xl:hidden"
               initial="closed"
               animate="open"
               exit="closed"
@@ -254,7 +288,7 @@ export const Navbar = () => {
               />
 
               <motion.div
-                className="absolute right-0 top-0 bottom-0 h-screen w-screen bg-card border-l shadow-xl"
+                className="absolute right-0 top-0 bottom-0 h-screen w-screen bg-background"
                 variants={mobileMenuVariants}
               >
                 <div className="flex flex-col h-full">
@@ -282,6 +316,11 @@ export const Navbar = () => {
                     </div>
 
                     <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-medium">Network</span>
+                        <NetworkSelector variant="ghost" size="sm" />
+                      </div>
+
                       <Link
                         href="/"
                         className={getLinkClassName('/', true)}
@@ -314,13 +353,18 @@ export const Navbar = () => {
 
                     {isAuthenticated && user && (user.email || user.wallet_address) ? (
                       <div className="space-y-2 pt-4 border-t">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-medium">Network</span>
+                          <NetworkSelector variant="ghost" size="sm" />
+                        </div>
+
                         <div className="flex items-center gap-2 text-sm">
                           {getUserDisplay()}
                         </div>
                         <div className="space-y-1">
                           <Button asChild variant="ghost" size="sm" className="w-full justify-start">
                             <Link href="/profile" onClick={() => setIsMobileMenuOpen(false)}>
-                              <User className="h-4 w-4 mr-2" />
+                              <RiUserLine className="h-4 w-4 mr-2" />
                               Profile
                             </Link>
                           </Button>
@@ -343,16 +387,39 @@ export const Navbar = () => {
                       </div>
                     ) : (
                       <div className="space-y-2 pt-4 border-t">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="w-full"
-                          onClick={handleConnectWallet}
-                          disabled={isConnectingWallet || !ready}
-                        >
-                          <Wallet className="h-4 w-4 mr-2" />
-                          {isConnectingWallet ? 'Connecting...' : 'Connect Wallet'}
-                        </Button>
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-medium">Network</span>
+                          <NetworkSelector variant="ghost" size="sm" />
+                        </div>
+
+                        {authenticated && privyUser?.wallet?.address ? (
+                          <div className="space-y-2">
+                            <div className="text-sm text-muted-foreground">
+                              Connected: {formatAddress(privyUser.wallet.address)}
+                            </div>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="w-full text-destructive hover:text-destructive"
+                              onClick={handleDisconnectWallet}
+                              disabled={isDisconnectingWallet}
+                            >
+                              <RiWallet3Line className="h-4 w-4 mr-2" />
+                              {isDisconnectingWallet ? 'Disconnecting...' : 'Disconnect Wallet'}
+                            </Button>
+                          </div>
+                        ) : (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="w-full"
+                            onClick={handleConnectWallet}
+                            disabled={isConnectingWallet || !ready}
+                          >
+                            <RiWallet3Line className="h-4 w-4 mr-2" />
+                            {isConnectingWallet ? 'Connecting...' : 'Connect Wallet'}
+                          </Button>
+                        )}
                         <Button asChild size="sm" className="w-full">
                           <Link href="/login" onClick={() => setIsMobileMenuOpen(false)}>
                             Get Started

@@ -5,8 +5,7 @@ export default function ExplorePage() {
 
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background to-muted/20">
-      {/* Header */}
+    <div className="min-h-screen">
       <section className="container mx-auto px-4 py-8">
         <div className="text-left space-y-4">
           <h1 className="text-4xl 2xl:text-5xl font-bold">Explore Digital Assets</h1>

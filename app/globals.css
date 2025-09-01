@@ -1,3 +1,4 @@
+
 :root {
   color-scheme: dark;
 }
@@ -17,7 +18,7 @@
   --secondary-foreground: #FFFFFF;
   --muted: #2E2B36;
   --muted-foreground: #A6A3B2;
-  --accent: #D6CFED;
+  --accent: #8570C7;
   --accent-foreground: #141217;
   --destructive: #FF6B6B;
   --border: rgba(255, 255, 255, 0.1);

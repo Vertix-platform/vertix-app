@@ -2,7 +2,7 @@ import { AuthConfig } from '@/types/auth';
 import { base, baseSepolia, polygon, polygonZkEvm, polygonZkEvmCardona } from 'viem/chains';
 
 export const authConfig: AuthConfig = {
-  RUST_BACKEND_URL: process.env.NEXT_PUBLIC_RUST_BACKEND_URL || 'http://localhost:8080',
+  RUST_BACKEND_URL: process.env.NEXT_PUBLIC_RUST_BACKEND_URL || 'http://0.0.0.0:8080',
   PRIVY_APP_ID: process.env.NEXT_PUBLIC_PRIVY_APP_ID || '',
   PRIVY_CLIENT_ID: process.env.NEXT_PUBLIC_PRIVY_CLIENT_ID as string,
 };
@@ -24,24 +24,33 @@ export const API_ENDPOINTS = {
     UPDATE_PROFILE: '/api/v1/users/profile',
   },
   CONTRACT: {
-    CREATE_COLLECTION: '/api/v1/contracts/create-collection',
-    MINT_NFT_TO_COLLECTION: '/api/v1/contracts/mint-nft-to-collection',
+    NETWORK_INFO: '/api/v1/contracts/network-info',
+    SUPPORTED_CHAINS: '/api/v1/contracts/supported-chains',
+    CHECK_CONNECTION: '/api/v1/contracts/check-connection',
+    COLLECTIONS: '/api/v1/contracts/collections',
     MINT_NFT: '/api/v1/contracts/mint-nft',
     MINT_SOCIAL_MEDIA_NFT: '/api/v1/contracts/mint-social-media-nft',
     INITIATE_SOCIAL_MEDIA_NFT_MINT: '/api/v1/contracts/initiate-social-media-nft-mint',
+    LIST_NFT: '/api/v1/contracts/list-nft',
+    LIST_SOCIAL_MEDIA_NFT: '/api/v1/contracts/list-social-media-nft',
+    LIST_NFT_FOR_AUCTION: '/api/v1/contracts/list-nft-for-auction',
+    BUY_NFT: '/api/v1/contracts/buy-nft',
+    CANCEL_NFT_LISTING: '/api/v1/contracts/cancel-nft-listing',
+    LIST_NON_NFT_ASSET: '/api/v1/contracts/list-non-nft-asset',
+    BUY_NON_NFT_ASSET: '/api/v1/contracts/buy-non-nft-asset',
+    CANCEL_NON_NFT_LISTING: '/api/v1/contracts/cancel-non-nft-listing',
     CONFIRM_TRANSFER: '/api/v1/contracts/confirm-transfer',
     RAISE_DISPUTE: '/api/v1/contracts/raise-dispute',
     REFUND: '/api/v1/contracts/refund',
-    LIST_NFT: '/api/v1/contracts/list-nft',
+    CREATE_COLLECTION: '/api/v1/contracts/create-collection',
+    MINT_NFT_TO_COLLECTION: '/api/v1/contracts/mint-nft-to-collection',
     LIST_NON_NFT: '/api/v1/contracts/list-non-nft',
-    LIST_SOCIAL_MEDIA_NFT: '/api/v1/contracts/list-social-media-nft',
-    CANCEL_NFT_LISTING: '/api/v1/contracts/cancel-nft-listing',
-    CANCEL_NON_NFT_LISTING: '/api/v1/contracts/cancel-non-nft-listing',
-    BUY_NFT: '/api/v1/contracts/buy-nft',
-    BUY_NON_NFT_ASSET: '/api/v1/contracts/buy-non-nft-asset',
-    LIST_NFT_FOR_AUCTION: '/api/v1/contracts/list-nft-for-auction',
     BUY_NFT_FOR_AUCTION: '/api/v1/contracts/buy-nft-for-auction',
     BUY_NON_NFT_ASSET_FOR_AUCTION: '/api/v1/contracts/buy-non-nft-asset-for-auction',
+  },
+  DASHBOARD: {
+    CREATOR_LISTINGS: '/api/v1/contracts/creator-listings',
+    CREATOR_ANALYTICS: '/api/v1/dashboard/analytics',
   },
 };
 
