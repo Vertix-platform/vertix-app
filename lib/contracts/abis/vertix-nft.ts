@@ -1,0 +1,154 @@
+import { ethers } from "ethers";
+export const VERTIX_NFT_ABI = [
+  {
+    "type": "function",
+    "name": "createCollection",
+    "inputs": [
+      {"name": "name", "type": "string", "internalType": "string"},
+      {"name": "symbol", "type": "string", "internalType": "string"},
+      {"name": "image", "type": "string", "internalType": "string"},
+      {"name": "maxSupply", "type": "uint16", "internalType": "uint16"}
+    ],
+    "outputs": [{"name": "", "type": "uint256", "internalType": "uint256"}],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "mintToCollection",
+    "inputs": [
+      {"name": "to", "type": "address", "internalType": "address"},
+      {"name": "collectionId", "type": "uint256", "internalType": "uint256"},
+      {"name": "uri", "type": "string", "internalType": "string"},
+      {"name": "metadataHash", "type": "bytes32", "internalType": "bytes32"},
+      {"name": "royaltyBps", "type": "uint96", "internalType": "uint96"}
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "mintSingleNft",
+    "inputs": [
+      {"name": "to", "type": "address", "internalType": "address"},
+      {"name": "uri", "type": "string", "internalType": "string"},
+      {"name": "metadataHash", "type": "bytes32", "internalType": "bytes32"},
+      {"name": "royaltyBps", "type": "uint96", "internalType": "uint96"}
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "mintSocialMediaNft",
+    "inputs": [
+      {"name": "to", "type": "address", "internalType": "address"},
+      {"name": "socialMediaId", "type": "string", "internalType": "string"},
+      {"name": "uri", "type": "string", "internalType": "string"},
+      {"name": "metadataHash", "type": "bytes32", "internalType": "bytes32"},
+      {"name": "royaltyBps", "type": "uint96", "internalType": "uint96"},
+      {"name": "signature", "type": "bytes", "internalType": "bytes"}
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "getCollectionDetails",
+    "inputs": [
+      {"name": "collectionId", "type": "uint256", "internalType": "uint256"}
+    ],
+    "outputs": [
+      {"name": "creator", "type": "address", "internalType": "address"},
+      {"name": "name", "type": "string", "internalType": "string"},
+      {"name": "symbol", "type": "string", "internalType": "string"},
+      {"name": "image", "type": "string", "internalType": "string"},
+      {"name": "maxSupply", "type": "uint256", "internalType": "uint256"},
+      {"name": "currentSupply", "type": "uint256", "internalType": "uint256"}
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getCollectionTokens",
+    "inputs": [
+      {"name": "collectionId", "type": "uint256", "internalType": "uint256"}
+    ],
+    "outputs": [
+      {"name": "", "type": "uint256[]", "internalType": "uint256[]"}
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "collections",
+    "inputs": [
+      {"name": "", "type": "uint256", "internalType": "uint256"}
+    ],
+    "outputs": [
+      {"name": "creator", "type": "address", "internalType": "address"},
+      {"name": "name", "type": "string", "internalType": "string"},
+      {"name": "symbol", "type": "string", "internalType": "string"},
+      {"name": "image", "type": "string", "internalType": "string"},
+      {"name": "maxSupply", "type": "uint16", "internalType": "uint16"},
+      {"name": "currentSupply", "type": "uint16", "internalType": "uint16"}
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "MAX_COLLECTION_SIZE",
+    "inputs": [],
+    "outputs": [{"name": "", "type": "uint16", "internalType": "uint16"}],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "MAX_ROYALTY_BPS",
+    "inputs": [],
+    "outputs": [{"name": "", "type": "uint256", "internalType": "uint256"}],
+    "stateMutability": "view"
+  },
+  {
+    "type": "event",
+    "name": "CollectionCreated",
+    "inputs": [
+      {"name": "collectionId", "type": "uint256", "indexed": true, "internalType": "uint256"},
+      {"name": "creator", "type": "address", "indexed": true, "internalType": "address"},
+      {"name": "name", "type": "string", "indexed": false, "internalType": "string"},
+      {"name": "symbol", "type": "string", "indexed": false, "internalType": "string"},
+      {"name": "image", "type": "string", "indexed": false, "internalType": "string"},
+      {"name": "maxSupply", "type": "uint256", "indexed": false, "internalType": "uint256"}
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "NFTMinted",
+    "inputs": [
+      {"name": "to", "type": "address", "indexed": true, "internalType": "address"},
+      {"name": "tokenId", "type": "uint256", "indexed": true, "internalType": "uint256"},
+      {"name": "collectionId", "type": "uint256", "indexed": true, "internalType": "uint256"},
+      {"name": "uri", "type": "string", "indexed": false, "internalType": "string"},
+      {"name": "metadataHash", "type": "bytes32", "indexed": false, "internalType": "bytes32"},
+      {"name": "royaltyRecipient", "type": "address", "indexed": false, "internalType": "address"},
+      {"name": "royaltyBps", "type": "uint96", "indexed": false, "internalType": "uint96"}
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "SocialMediaNFTMinted",
+    "inputs": [
+      {"name": "to", "type": "address", "indexed": true, "internalType": "address"},
+      {"name": "tokenId", "type": "uint256", "indexed": true, "internalType": "uint256"},
+      {"name": "socialMediaId", "type": "string", "indexed": false, "internalType": "string"},
+      {"name": "uri", "type": "string", "indexed": false, "internalType": "string"},
+      {"name": "metadataHash", "type": "bytes32", "indexed": false, "internalType": "bytes32"},
+      {"name": "royaltyRecipient", "type": "address", "indexed": true, "internalType": "address"},
+      {"name": "royaltyBps", "type": "uint96", "indexed": false, "internalType": "uint96"}
+    ],
+    "anonymous": false
+  }
+] as const;
+
+export type VERTIX_NFT_ABI = ethers.Contract

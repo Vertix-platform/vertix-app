@@ -13,14 +13,14 @@ import type {
   ApiResponse,
 } from '@/types/auth';
 import type {
-  MintNftRequest,
-  MintNftResponse,
   InitiateSocialMediaNftMintRequest,
   InitiateSocialMediaNftMintResponse,
   MintSocialMediaNftRequest,
   MintSocialMediaNftResponse,
   NetworkInfo,
   Collection,
+  CreateCollectionRequest,
+  CreateCollectionResponse,
 } from '@/types/listings';
 
 // Cookie utility functions
@@ -298,12 +298,6 @@ export const contractApi = {
     return makeRequest<boolean>(API_ENDPOINTS.CONTRACT.CHECK_CONNECTION);
   },
 
-  mintNft: async (data: MintNftRequest): Promise<ApiResponse<MintNftResponse>> => {
-    return makeRequest<MintNftResponse>(API_ENDPOINTS.CONTRACT.MINT_NFT, {
-      method: 'POST',
-      body: JSON.stringify(data),
-    });
-  },
 
   initiateSocialMediaNftMint: async (data: InitiateSocialMediaNftMintRequest): Promise<ApiResponse<InitiateSocialMediaNftMintResponse>> => {
     return makeRequest<InitiateSocialMediaNftMintResponse>(API_ENDPOINTS.CONTRACT.INITIATE_SOCIAL_MEDIA_NFT_MINT, {
@@ -312,18 +306,8 @@ export const contractApi = {
     });
   },
 
-  mintSocialMediaNft: async (data: MintSocialMediaNftRequest): Promise<ApiResponse<MintSocialMediaNftResponse>> => {
-    return makeRequest<MintSocialMediaNftResponse>(API_ENDPOINTS.CONTRACT.MINT_SOCIAL_MEDIA_NFT, {
-      method: 'POST',
-      body: JSON.stringify(data),
-    });
-  },
-
-  mintNftToCollection: async (data: MintNftRequest): Promise<ApiResponse<MintNftResponse>> => {
-    return makeRequest<MintNftResponse>(API_ENDPOINTS.CONTRACT.MINT_NFT_TO_COLLECTION, {
-      method: 'POST',
-      body: JSON.stringify(data),
-    });
+  getAllCollections: async (): Promise<ApiResponse<Collection[]>> => {
+    return makeRequest<Collection[]>(API_ENDPOINTS.CONTRACT.COLLECTIONS);
   },
 };
 
@@ -368,10 +352,8 @@ export const apiClient = {
   updateUserProfile: userApi.updateProfile,
   getNetworkInfo: contractApi.getNetworkInfo,
   checkConnection: contractApi.checkConnection,
-  mintNft: contractApi.mintNft,
   initiateSocialMediaNftMint: contractApi.initiateSocialMediaNftMint,
-  mintSocialMediaNft: contractApi.mintSocialMediaNft,
-  mintNftToCollection: contractApi.mintNftToCollection,
+  getAllCollections: contractApi.getAllCollections,
   logout: authUtils.logout,
   isAuthenticated: authUtils.isAuthenticated,
   getAccessToken: authUtils.getAccessToken,

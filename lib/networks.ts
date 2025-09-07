@@ -1,7 +1,7 @@
 import type { Network } from '@/types/network';
 import Polygon from '@/assets/svg/polygon.svg';
 import Base from '@/assets/png/base.jpeg';
-import Ethereum from '@/assets/svg/polygon.svg';
+import Ethereum from '@/assets/svg/ethereum.svg';
 
 export const networks: Network[] = [
   {

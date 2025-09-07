@@ -8,8 +8,10 @@ import { Label } from "@/components/ui/label"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { apiClient } from "@/lib/api"
 import { useAuth } from "@/hooks/use-auth"
-import { ArrowLeft, Upload, CheckCircle, AlertCircle, Instagram, Twitter, Facebook, Youtube, Twitch } from "lucide-react"
+import { ArrowLeft, Upload, AlertCircle} from "lucide-react"
 import Link from "next/link"
+import { RiFacebookFill, RiInstagramFill, RiTiktokFill, RiTwitchFill, RiTwitterFill, RiYoutubeFill } from "@remixicon/react"
+import type { InitiateSocialMediaNftMintResponse, MintSocialMediaNftResponse } from "@/types/listings"
 
 interface SocialMediaFormData {
   platform: 'x' | 'instagram' | 'facebook' | 'youtube' | 'tiktok' | 'twitch'
@@ -25,12 +27,12 @@ interface SocialMediaFormData {
 }
 
 const platformConfig = {
-  x: { name: 'X (Twitter)', icon: Twitter, color: 'text-blue-500' },
-  instagram: { name: 'Instagram', icon: Instagram, color: 'text-pink-500' },
-  facebook: { name: 'Facebook', icon: Facebook, color: 'text-blue-600' },
-  youtube: { name: 'YouTube', icon: Youtube, color: 'text-red-500' },
-  tiktok: { name: 'TikTok', icon: null, color: 'text-black' },
-  twitch: { name: 'Twitch', icon: Twitch, color: 'text-purple-500' },
+  x: { name: 'X (Twitter)', icon: RiTwitterFill, color: 'text-blue-500' },
+  instagram: { name: 'Instagram', icon: RiInstagramFill, color: 'text-pink-500' },
+  facebook: { name: 'Facebook', icon: RiFacebookFill, color: 'text-blue-600' },
+  youtube: { name: 'YouTube', icon: RiYoutubeFill, color: 'text-red-500' },
+  tiktok: { name: 'TikTok', icon: RiTiktokFill, color: 'text-black' },
+  twitch: { name: 'Twitch', icon: RiTwitchFill, color: 'text-purple-500' },
 }
 
 const MintSocialMediaNftPage = () => {
@@ -49,20 +51,8 @@ const MintSocialMediaNftPage = () => {
   })
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [success, setSuccess] = useState<{
-    token_id: number
-    social_media_id: string
-    transaction_hash: string
-    block_number: number
-  } | null>(null)
-  const [initiateData, setInitiateData] = useState<{
-    social_media_id: string
-    token_uri: string
-    metadata_hash: string
-    signature: string
-    royalty_bps: number
-    metadata: string
-  } | null>(null)
+  const [success, setSuccess] = useState<MintSocialMediaNftResponse | null>(null)
+  const [initiateData, setInitiateData] = useState<InitiateSocialMediaNftMintResponse | null>(null)
 
   const handleInputChange = (field: keyof SocialMediaFormData, value: string | boolean) => {
     setFormData(prev => ({
@@ -150,11 +140,11 @@ const MintSocialMediaNftPage = () => {
     try {
       const response = await apiClient.mintSocialMediaNft({
         wallet_address: user.wallet_address,
-        social_media_id: initiateData.social_media_id,
-        token_uri: initiateData.token_uri,
-        metadata_hash: initiateData.metadata_hash,
-        royalty_bps: initiateData.royalty_bps,
-        signature: initiateData.signature,
+        social_media_id: initiateData.data!.social_media_id,
+        token_uri: initiateData.data!.token_uri,
+        metadata_hash: initiateData.data!.metadata_hash,
+        royalty_bps: initiateData.data!.royalty_bps,
+        signature: initiateData.data!.signature,
       })
 
       if (response.success && response.data) {
@@ -204,21 +194,6 @@ const MintSocialMediaNftPage = () => {
             </div>
           </div>
 
-          {/* Success Alert */}
-          {success && (
-            <Alert className="mb-6 border-green-200 bg-green-50">
-              <CheckCircle className="h-4 w-4 text-green-600" />
-              <AlertDescription className="text-green-800">
-                <div className="font-medium mb-2">Social Media NFT Minted Successfully!</div>
-                <div className="text-sm space-y-1">
-                  <div>Token ID: {success.token_id}</div>
-                  <div>Social Media ID: {success.social_media_id}</div>
-                  <div>Transaction Hash: {success.transaction_hash}</div>
-                  <div>Block Number: {success.block_number}</div>
-                </div>
-              </AlertDescription>
-            </Alert>
-          )}
 
           {/* Error Alert */}
           {error && (
@@ -241,8 +216,8 @@ const MintSocialMediaNftPage = () => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-2 text-sm">
-                  <div><strong>Social Media ID:</strong> {initiateData.social_media_id}</div>
-                  <div><strong>Royalty:</strong> {initiateData.royalty_bps / 100}%</div>
+                  <div><strong>Social Media ID:</strong> {initiateData.data?.social_media_id}</div>
+                  <div><strong>Royalty:</strong> {initiateData.data?.royalty_bps ? (initiateData.data.royalty_bps / 100) : 0}%</div>
                 </div>
                 <Button
                   onClick={handleMint}
@@ -283,7 +258,7 @@ const MintSocialMediaNftPage = () => {
                     <Button
                       key={key}
                       variant={formData.platform === key ? "default" : "outline"}
-                      onClick={() => handleInputChange("platform", key as any)}
+                      onClick={() => handleInputChange("platform", key as 'x' | 'instagram' | 'facebook' | 'youtube' | 'tiktok' | 'twitch')}
                       className="justify-start"
                       disabled={isLoading}
                     >
@@ -453,35 +428,6 @@ const MintSocialMediaNftPage = () => {
                   Please connect your wallet to mint a social media NFT
                 </p>
               )}
-            </CardContent>
-          </Card>
-
-          {/* Help Section */}
-          <Card className="mt-6">
-            <CardHeader>
-              <CardTitle>How It Works</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div>
-                  <h4 className="font-medium mb-2">Step 1: Verification</h4>
-                  <p className="text-sm text-muted-foreground">
-                    We verify your social media profile using the provided access token and create metadata for your NFT.
-                  </p>
-                </div>
-                <div>
-                  <h4 className="font-medium mb-2">Step 2: Minting</h4>
-                  <p className="text-sm text-muted-foreground">
-                    Once verified, we mint your NFT on the blockchain with the verified social media data.
-                  </p>
-                </div>
-                <div>
-                  <h4 className="font-medium mb-2">Access Tokens</h4>
-                  <p className="text-sm text-muted-foreground">
-                    You'll need to obtain an access token from your social media platform. This token is used to verify your profile data and is not stored permanently.
-                  </p>
-                </div>
-              </div>
             </CardContent>
           </Card>
         </div>

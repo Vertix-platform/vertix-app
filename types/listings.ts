@@ -6,10 +6,34 @@ export interface MintNftRequest {
   royalty_bps?: number;
 }
 
+export interface MintNftToCollectionRequest {
+  wallet_address: string;
+  collection_id: number;
+  token_uri: string;
+  metadata_hash: string;
+  royalty_bps?: number;
+}
+
 export interface MintNftResponse {
   success: boolean;
   data?: {
     token_id: number;
+    transaction_hash: string;
+    block_number: number;
+  };
+  error?: string;
+}
+
+export interface MintNftToCollectionResponse {
+  success: boolean;
+  data?: {
+    to: string;
+    collection_id: number;
+    token_id: number;
+    uri: string;
+    metadata_hash: string;
+    royalty_recipient: string;
+    royalty_bps: number;
     transaction_hash: string;
     block_number: number;
   };
@@ -81,10 +105,37 @@ export interface NetworkInfo {
 }
 
 export interface Collection {
-  id: number;
+  collection_id: number;
+  chain_id: number;
   name: string;
-  description: string;
-  owner: string;
-  created_at: string;
-  updated_at: string;
-} 
+  symbol: string;
+  image: string;
+  max_supply: number;
+  creator: string;
+  current_supply: number;
+}
+
+export interface CreateCollectionRequest {
+  wallet_address: string;
+  name: string;
+  symbol: string;
+  image: string;
+  max_supply: number;
+}
+
+export interface CreateCollectionResponse {
+  success: boolean;
+  data?: {
+    collection_id: number;
+    creator: string;
+    name: string;
+    symbol: string;
+    image: string;
+    max_supply: number;
+    current_supply: number;
+    token_ids: number[];
+    transaction_hash: string;
+    block_number: number;
+  };
+  error?: string;
+}

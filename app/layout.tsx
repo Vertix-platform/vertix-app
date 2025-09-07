@@ -15,9 +15,9 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: "Vertix - Marketplace for digital assets",
-  description: "A decentralized marketplace for digital assets built on blockchain technology",
-};
+  title: "Vertix - Decentralized Digital Asset Marketplace",
+  description: "Trade NFTs, gaming assets, and digital collectibles on Polygon and Base networks",
+}
 
 export default function RootLayout({
   children,

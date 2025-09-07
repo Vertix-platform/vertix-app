@@ -23,6 +23,7 @@ import {
   X,
   Search,
   Bell,
+  LayoutDashboard,
 } from 'lucide-react';
 import { RiUserLine, RiWallet3Line } from "@remixicon/react";
 
@@ -144,6 +145,12 @@ export const Navbar = () => {
             <DropdownMenuItem disabled>
               <RiWallet3Line className="h-4 w-4 mr-2" />
               {formatAddress(privyUser.wallet.address)}
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link href="/creator-dashboard">
+                <LayoutDashboard className="h-4 w-4 mr-2" />
+                Creator Dashboard
+              </Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem

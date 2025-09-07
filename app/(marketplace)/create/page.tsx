@@ -32,7 +32,7 @@ const CreatePage = () => {
                 <p className="text-sm text-muted-foreground mb-4">
                   Mint basic NFTs, social media NFTs, or add to collections.
                 </p>
-                <Link href="/create">
+                <Link href="/create/nft">
                   <Button className="w-full">Start Creating NFTs</Button>
                 </Link>
               </CardContent>
@@ -53,7 +53,7 @@ const CreatePage = () => {
                 <p className="text-sm text-muted-foreground mb-4">
                   Create collections to group related NFTs together.
                 </p>
-                <Link href="/collections/create">
+                <Link href="/create/create-collection">
                   <Button className="w-full">Create Collection</Button>
                 </Link>
               </CardContent>
