@@ -23,7 +23,7 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
-      checkAuth().then((authenticated) => {
+      checkAuth().then(authenticated => {
         if (!authenticated) {
           router.push(redirectTo);
         }
@@ -34,11 +34,13 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   if (isLoading) {
     return (
       fallback || (
-        <div className="min-h-screen flex items-center justify-center">
-          <Card className="w-full max-w-md mx-auto">
-            <CardContent className="flex flex-col items-center justify-center p-8 space-y-4">
-              <Loader2 className="h-8 w-8 animate-spin text-primary" />
-              <p className="text-muted-foreground">Verifying authentication...</p>
+        <div className='min-h-screen flex items-center justify-center'>
+          <Card className='w-full max-w-md mx-auto'>
+            <CardContent className='flex flex-col items-center justify-center p-8 space-y-4'>
+              <Loader2 className='h-8 w-8 animate-spin text-primary' />
+              <p className='text-muted-foreground'>
+                Verifying authentication...
+              </p>
             </CardContent>
           </Card>
         </div>
@@ -48,17 +50,15 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Card className="w-full max-w-md mx-auto">
-          <CardContent className="flex flex-col items-center justify-center p-8 space-y-4">
-            <Shield className="h-12 w-12 text-muted-foreground" />
-            <h2 className="text-xl font-semibold">Access Denied</h2>
-            <p className="text-muted-foreground text-center">
+      <div className='min-h-screen flex items-center justify-center'>
+        <Card className='w-full max-w-md mx-auto'>
+          <CardContent className='flex flex-col items-center justify-center p-8 space-y-4'>
+            <Shield className='h-12 w-12 text-muted-foreground' />
+            <h2 className='text-xl font-semibold'>Access Denied</h2>
+            <p className='text-muted-foreground text-center'>
               You need to be authenticated to access this page.
             </p>
-            <Button onClick={() => router.push(redirectTo)}>
-              Go to Login
-            </Button>
+            <Button onClick={() => router.push(redirectTo)}>Go to Login</Button>
           </CardContent>
         </Card>
       </div>

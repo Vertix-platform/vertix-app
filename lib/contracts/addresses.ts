@@ -1,21 +1,32 @@
-import { type Address } from 'viem'
-import { base, baseSepolia, polygon, polygonZkEvm, polygonZkEvmCardona } from 'viem/chains'
+import { type Address } from 'viem';
+import {
+  base,
+  baseSepolia,
+  polygon,
+  polygonZkEvm,
+  polygonZkEvmCardona,
+} from 'viem/chains';
 
-export type ChainId = typeof baseSepolia.id | typeof base.id | typeof polygon.id | typeof polygonZkEvm.id | typeof polygonZkEvmCardona.id
+export type ChainId =
+  | typeof baseSepolia.id
+  | typeof base.id
+  | typeof polygon.id
+  | typeof polygonZkEvm.id
+  | typeof polygonZkEvmCardona.id;
 
 export interface ContractAddresses {
-  VertixNFT: Address
-  MarketplaceCore: Address
-  MarketplaceProxy: Address
-  VertixEscrow: Address
-  VertixGovernance: Address
-  CrossChainBridge: Address
-  CrossChainRegistry: Address
-  MarketplaceStorage: Address
-  MarketplaceFees: Address
-  MarketplaceAuctions: Address
-  VerificationServer: Address
-  FeeRecipient: Address
+  VertixNFT: Address;
+  MarketplaceCore: Address;
+  MarketplaceProxy: Address;
+  VertixEscrow: Address;
+  VertixGovernance: Address;
+  CrossChainBridge: Address;
+  CrossChainRegistry: Address;
+  MarketplaceStorage: Address;
+  MarketplaceFees: Address;
+  MarketplaceAuctions: Address;
+  VerificationServer: Address;
+  FeeRecipient: Address;
 }
 
 // Contract addresses for each supported chain
@@ -95,17 +106,17 @@ export const CONTRACT_ADDRESSES: Record<ChainId, ContractAddresses> = {
     VerificationServer: '0x0000000000000000000000000000000000000000',
     FeeRecipient: '0x0000000000000000000000000000000000000000',
   },
-}
+};
 
 /**
  * Get contract addresses for a specific chain
  */
 export function getContractAddresses(chainId: ChainId): ContractAddresses {
-  const addresses = CONTRACT_ADDRESSES[chainId]
+  const addresses = CONTRACT_ADDRESSES[chainId];
   if (!addresses) {
-    throw new Error(`Unsupported chain ID: ${chainId}`)
+    throw new Error(`Unsupported chain ID: ${chainId}`);
   }
-  return addresses
+  return addresses;
 }
 
 /**
@@ -115,20 +126,20 @@ export function getContractAddress(
   chainId: ChainId,
   contractName: keyof ContractAddresses
 ): Address {
-  const addresses = getContractAddresses(chainId)
-  return addresses[contractName]
+  const addresses = getContractAddresses(chainId);
+  return addresses[contractName];
 }
 
 /**
  * Check if a chain is supported
  */
 export function isSupportedChain(chainId: number): chainId is ChainId {
-  return chainId in CONTRACT_ADDRESSES
+  return chainId in CONTRACT_ADDRESSES;
 }
 
 /**
  * Get all supported chain IDs
  */
 export function getSupportedChainIds(): ChainId[] {
-  return Object.keys(CONTRACT_ADDRESSES).map(Number) as ChainId[]
+  return Object.keys(CONTRACT_ADDRESSES).map(Number) as ChainId[];
 }

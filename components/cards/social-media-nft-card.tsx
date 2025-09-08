@@ -1,9 +1,22 @@
 'use client';
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ExternalLink, Wallet, Clock, Users, Shield, TrendingUp } from 'lucide-react';
+import {
+  ExternalLink,
+  Wallet,
+  Clock,
+  Users,
+  Shield,
+  TrendingUp,
+} from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { formatPrice, formatAddress, formatNumber } from '@/lib/custom-utils';
@@ -51,8 +64,12 @@ interface SocialMediaNftCardProps {
   className?: string;
 }
 
-export const SocialMediaNftCard = ({ listing, onBuy, onBid, className = '' }: SocialMediaNftCardProps) => {
-
+export const SocialMediaNftCard = ({
+  listing,
+  onBuy,
+  onBid,
+  className = '',
+}: SocialMediaNftCardProps) => {
   const getImageUrl = () => {
     if (listing.metadata?.social_media_data?.profile_image) {
       return listing.metadata.social_media_data.profile_image;
@@ -79,16 +96,18 @@ export const SocialMediaNftCard = ({ listing, onBuy, onBid, className = '' }: So
 
     const platform = listing.metadata.social_media_data.platform.toLowerCase();
     const platformColors = {
-      'x': 'bg-black',
-      'twitter': 'bg-black',
-      'instagram': 'bg-gradient-to-r from-purple-500 to-pink-500',
-      'facebook': 'bg-blue-600',
-      'youtube': 'bg-red-600',
-      'tiktok': 'bg-black',
+      x: 'bg-black',
+      twitter: 'bg-black',
+      instagram: 'bg-gradient-to-r from-purple-500 to-pink-500',
+      facebook: 'bg-blue-600',
+      youtube: 'bg-red-600',
+      tiktok: 'bg-black',
     };
 
     return (
-      <Badge className={`${platformColors[platform as keyof typeof platformColors] || 'bg-gray-500'} text-white`}>
+      <Badge
+        className={`${platformColors[platform as keyof typeof platformColors] || 'bg-gray-500'} text-white`}
+      >
         {listing.metadata.social_media_data.platform}
       </Badge>
     );
@@ -96,17 +115,21 @@ export const SocialMediaNftCard = ({ listing, onBuy, onBid, className = '' }: So
 
   const getSocialMetrics = () => {
     if (!listing.metadata?.social_media_data) return null;
-    
+
     const data = listing.metadata.social_media_data;
     return (
-      <div className="grid grid-cols-2 gap-4 text-sm">
-        <div className="text-center">
-          <div className="font-bold text-primary">{formatNumber(data.followers)}</div>
-          <div className="text-muted-foreground">Followers</div>
+      <div className='grid grid-cols-2 gap-4 text-sm'>
+        <div className='text-center'>
+          <div className='font-bold text-primary'>
+            {formatNumber(data.followers)}
+          </div>
+          <div className='text-muted-foreground'>Followers</div>
         </div>
-        <div className="text-center">
-          <div className="font-bold text-primary">{formatNumber(data.posts)}</div>
-          <div className="text-muted-foreground">Posts</div>
+        <div className='text-center'>
+          <div className='font-bold text-primary'>
+            {formatNumber(data.posts)}
+          </div>
+          <div className='text-muted-foreground'>Posts</div>
         </div>
       </div>
     );
@@ -115,53 +138,51 @@ export const SocialMediaNftCard = ({ listing, onBuy, onBid, className = '' }: So
   return (
     <Card className={`hover:shadow-lg transition-shadow ${className}`}>
       {/* Social Media Profile Image */}
-      <div className="relative aspect-square overflow-hidden rounded-t-lg">
+      <div className='relative aspect-square overflow-hidden rounded-t-lg'>
         <Image
           src={getImageUrl()}
           alt={getDisplayName()}
-          className="w-full h-full object-cover"
+          className='w-full h-full object-cover'
           width={300}
           height={300}
         />
 
         {/* Platform Badge */}
-        <div className="absolute top-2 left-2">
-          {getPlatformBadge()}
-        </div>
+        <div className='absolute top-2 left-2'>{getPlatformBadge()}</div>
 
         {/* Auction Badge */}
         {listing.is_auction && (
-          <Badge className="absolute top-2 right-2 bg-orange-500 hover:bg-orange-600">
-            <Clock className="h-3 w-3 mr-1" />
+          <Badge className='absolute top-2 right-2 bg-orange-500 hover:bg-orange-600'>
+            <Clock className='h-3 w-3 mr-1' />
             Auction
           </Badge>
         )}
 
         {/* Verification Badge */}
         {listing.metadata?.social_media_data?.verified && (
-          <Badge className="absolute bottom-2 left-2 bg-blue-500 hover:bg-blue-600">
-            <Shield className="h-3 w-3 mr-1" />
+          <Badge className='absolute bottom-2 left-2 bg-blue-500 hover:bg-blue-600'>
+            <Shield className='h-3 w-3 mr-1' />
             Verified
           </Badge>
         )}
 
         {/* Sold Overlay */}
         {!listing.active && (
-          <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-            <Badge variant="secondary" className="text-white bg-gray-600">
+          <div className='absolute inset-0 bg-black/50 flex items-center justify-center'>
+            <Badge variant='secondary' className='text-white bg-gray-600'>
               Sold
             </Badge>
           </div>
         )}
       </div>
 
-      <CardHeader className="p-4">
-        <div className="flex items-start justify-between mb-2">
-          <div className="flex-1">
-            <CardTitle className="text-lg font-semibold mb-1">
+      <CardHeader className='p-4'>
+        <div className='flex items-start justify-between mb-2'>
+          <div className='flex-1'>
+            <CardTitle className='text-lg font-semibold mb-1'>
               {getDisplayName()}
             </CardTitle>
-            <CardDescription className="text-sm text-muted-foreground">
+            <CardDescription className='text-sm text-muted-foreground'>
               {listing.metadata?.description || listing.description}
             </CardDescription>
           </div>
@@ -169,12 +190,16 @@ export const SocialMediaNftCard = ({ listing, onBuy, onBid, className = '' }: So
 
         {/* Social Media Metrics */}
         {getSocialMetrics() && (
-          <div className="mb-4 p-3 bg-muted/50 rounded-lg">
+          <div className='mb-4 p-3 bg-muted/50 rounded-lg'>
             {getSocialMetrics()}
             {listing.metadata?.social_media_data?.engagement_rate && (
-              <div className="text-center mt-2">
-                <div className="text-sm text-muted-foreground">
-                  Engagement Rate: {listing.metadata.social_media_data.engagement_rate.toFixed(2)}%
+              <div className='text-center mt-2'>
+                <div className='text-sm text-muted-foreground'>
+                  Engagement Rate:{' '}
+                  {listing.metadata.social_media_data.engagement_rate.toFixed(
+                    2
+                  )}
+                  %
                 </div>
               </div>
             )}
@@ -182,77 +207,75 @@ export const SocialMediaNftCard = ({ listing, onBuy, onBid, className = '' }: So
         )}
 
         {/* Creator Info */}
-        <div className="flex items-center gap-2 mb-3">
-          <Wallet className="h-4 w-4 text-muted-foreground" />
-          <span className="text-sm text-muted-foreground">
+        <div className='flex items-center gap-2 mb-3'>
+          <Wallet className='h-4 w-4 text-muted-foreground' />
+          <span className='text-sm text-muted-foreground'>
             Creator: {formatAddress(listing.creator_address)}
           </span>
         </div>
 
         {/* Price */}
-        <div className="flex items-center justify-between mb-4">
+        <div className='flex items-center justify-between mb-4'>
           <div>
-            <span className="text-sm text-muted-foreground">Price</span>
-            <div className="text-xl font-bold text-primary">
+            <span className='text-sm text-muted-foreground'>Price</span>
+            <div className='text-xl font-bold text-primary'>
               {formatPrice(listing.price)}
             </div>
           </div>
-          <div className="text-right">
-            <span className="text-sm text-muted-foreground">Token ID</span>
-            <div className="text-sm font-mono">#{listing.token_id}</div>
+          <div className='text-right'>
+            <span className='text-sm text-muted-foreground'>Token ID</span>
+            <div className='text-sm font-mono'>#{listing.token_id}</div>
           </div>
         </div>
 
         {/* Action Buttons */}
         {listing.active && (
-          <div className="flex gap-2">
+          <div className='flex gap-2'>
             {listing.is_auction ? (
-              <Button 
+              <Button
                 onClick={() => onBid?.(listing.listing_id)}
-                className="flex-1"
-                size="sm"
+                className='flex-1'
+                size='sm'
               >
                 Place Bid
               </Button>
             ) : (
-              <Button 
+              <Button
                 onClick={() => onBuy?.(listing.listing_id)}
-                className="flex-1"
-                size="sm"
+                className='flex-1'
+                size='sm'
               >
                 Buy Now
               </Button>
             )}
-            <Button
-              asChild
-              variant="outline"
-              size="sm"
-            >
+            <Button asChild variant='outline' size='sm'>
               <Link href={`/social-media-nft/${listing.listing_id}`}>
-                <ExternalLink className="h-4 w-4" />
+                <ExternalLink className='h-4 w-4' />
               </Link>
             </Button>
           </div>
         )}
 
         {/* Social Media Details */}
-        <div className="mt-4 pt-4 border-t">
-          <div className="grid grid-cols-2 gap-4 text-sm">
+        <div className='mt-4 pt-4 border-t'>
+          <div className='grid grid-cols-2 gap-4 text-sm'>
             <div>
-              <span className="text-muted-foreground">Social Media ID:</span>
-              <div className="font-mono text-xs truncate">{listing.social_media_id}</div>
+              <span className='text-muted-foreground'>Social Media ID:</span>
+              <div className='font-mono text-xs truncate'>
+                {listing.social_media_id}
+              </div>
             </div>
             <div>
-              <span className="text-muted-foreground">Listing ID:</span>
-              <div className="font-mono text-xs">#{listing.listing_id}</div>
+              <span className='text-muted-foreground'>Listing ID:</span>
+              <div className='font-mono text-xs'>#{listing.listing_id}</div>
             </div>
           </div>
         </div>
 
         {/* Special Features */}
-        <div className="mt-3 pt-3 border-t">
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <TrendingUp className="h-4 w-4" />
+        <div className='mt-3 pt-3 border-t'>
+          <div className='flex items-center gap-2 text-sm text-muted-foreground'>
+            <TrendingUp className='h-4 w-4' />
             <span>Creator-branded NFT with utility features</span>
           </div>
         </div>

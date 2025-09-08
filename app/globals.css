@@ -1,4 +1,3 @@
-
 :root {
   color-scheme: dark;
 }
@@ -7,75 +6,75 @@
 :root {
   --radius: 0.625rem;
   --background: #141217;
-  --foreground: #FFFFFF;
+  --foreground: #ffffff;
   --card: #181818;
-  --card-foreground: #FFFFFF;
+  --card-foreground: #ffffff;
   --popover: #181818;
-  --popover-foreground: #FFFFFF;
-  --primary: #FFFFFF;
+  --popover-foreground: #ffffff;
+  --primary: #ffffff;
   --primary-foreground: oklch(0.205 0 0);
-  --secondary: #2E2B36;
-  --secondary-foreground: #FFFFFF;
-  --muted: #2E2B36;
-  --muted-foreground: #A6A3B2;
-  --accent: #8570C7;
+  --secondary: #2e2b36;
+  --secondary-foreground: #ffffff;
+  --muted: #2e2b36;
+  --muted-foreground: #a6a3b2;
+  --accent: #8570c7;
   --accent-foreground: #141217;
-  --destructive: #FF6B6B;
+  --destructive: #ff6b6b;
   --border: rgba(255, 255, 255, 0.1);
-  --input: #2E2B36;
-  --ring: #D6CFED;
-  --chart-1: #7C3AED;
-  --chart-2: #3B82F6;
-  --chart-3: #10B981;
-  --chart-4: #F59E0B;
-  --chart-5: #EF4444;
+  --input: #2e2b36;
+  --ring: #d6cfed;
+  --chart-1: #7c3aed;
+  --chart-2: #3b82f6;
+  --chart-3: #10b981;
+  --chart-4: #f59e0b;
+  --chart-5: #ef4444;
   --sidebar: #181818;
-  --sidebar-foreground: #FFFFFF;
-  --sidebar-primary: #FFFFFF;
+  --sidebar-foreground: #ffffff;
+  --sidebar-primary: #ffffff;
   --sidebar-primary-foreground: #141217;
-  --sidebar-accent: #2E2B36;
-  --sidebar-accent-foreground: #FFFFFF;
+  --sidebar-accent: #2e2b36;
+  --sidebar-accent-foreground: #ffffff;
   --sidebar-border: rgba(255, 255, 255, 0.1);
-  --sidebar-ring: #D6CFED;
+  --sidebar-ring: #d6cfed;
 }
 
 /* Light theme variables - only applied when .light class is present */
 .light {
-  --background: #FFFFFF;
+  --background: #ffffff;
   --foreground: #000000;
-  --card: #FFFFFF;
+  --card: #ffffff;
   --card-foreground: #000000;
-  --popover: #FFFFFF;
+  --popover: #ffffff;
   --popover-foreground: #000000;
   --primary: #000000;
-  --primary-foreground: #FFFFFF;
-  --secondary: #F3F4F6;
+  --primary-foreground: #ffffff;
+  --secondary: #f3f4f6;
   --secondary-foreground: #000000;
-  --muted: #F3F4F6;
-  --muted-foreground: #6B7280;
-  --accent: #F3F4F6;
+  --muted: #f3f4f6;
+  --muted-foreground: #6b7280;
+  --accent: #f3f4f6;
   --accent-foreground: #000000;
-  --destructive: #EF4444;
-  --border: #E5E7EB;
-  --input: #FFFFFF;
+  --destructive: #ef4444;
+  --border: #e5e7eb;
+  --input: #ffffff;
   --ring: #000000;
-  --chart-1: #7C3AED;
-  --chart-2: #3B82F6;
-  --chart-3: #10B981;
-  --chart-4: #F59E0B;
-  --chart-5: #EF4444;
-  --sidebar: #FFFFFF;
+  --chart-1: #7c3aed;
+  --chart-2: #3b82f6;
+  --chart-3: #10b981;
+  --chart-4: #f59e0b;
+  --chart-5: #ef4444;
+  --sidebar: #ffffff;
   --sidebar-foreground: #000000;
   --sidebar-primary: #000000;
-  --sidebar-primary-foreground: #FFFFFF;
-  --sidebar-accent: #F3F4F6;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #f3f4f6;
   --sidebar-accent-foreground: #000000;
-  --sidebar-border: #E5E7EB;
+  --sidebar-border: #e5e7eb;
   --sidebar-ring: #000000;
 }
 
-@import "tailwindcss";
-@import "tw-animate-css";
+@import 'tailwindcss';
+@import 'tw-animate-css';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -123,8 +122,8 @@
   * {
     @apply border-border outline-ring/50;
   }
-  input{
-    @apply bg-input text-[#A6A3B2]  focus:outline-0 focus:border-none ring-0 focus:ring-0
+  input {
+    @apply bg-input text-[#A6A3B2]  focus:outline-0 focus:border-none ring-0 focus:ring-0;
   }
   html {
     /* Responsive font scaling */
@@ -134,7 +133,9 @@
 
   body {
     @apply bg-background text-foreground;
-    font-feature-settings: "rlig" 1, "calt" 1;
+    font-feature-settings:
+      'rlig' 1,
+      'calt' 1;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -146,12 +147,12 @@
     @apply text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight;
     line-height: 1.1;
   }
-  
+
   h2 {
     @apply text-3xl md:text-4xl lg:text-5xl font-semibold tracking-tight;
     line-height: 1.2;
   }
-  
+
   h3 {
     @apply text-2xl md:text-3xl lg:text-4xl font-semibold;
     line-height: 1.3;
@@ -196,7 +197,10 @@
 
   /* Smooth transitions for theme switching */
   * {
-    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+    transition:
+      background-color 0.3s ease,
+      border-color 0.3s ease,
+      color 0.3s ease;
   }
 
   /* Focus styles for accessibility */

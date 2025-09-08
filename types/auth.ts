@@ -109,7 +109,10 @@ export interface AuthState {
 }
 
 export interface AuthActions {
-  login: (userData: UserResponse, tokens: { access_token: string; refresh_token: string }) => void;
+  login: (
+    userData: UserResponse,
+    tokens: { access_token: string; refresh_token: string }
+  ) => void;
   logout: () => void;
   setPrivyUser: (privyUser: PrivyUser | null) => void;
   setLoading: (loading: boolean) => void;

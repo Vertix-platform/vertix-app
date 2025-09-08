@@ -16,7 +16,10 @@ export const useAuthStore = create<AuthStore>()(
       refreshToken: null,
 
       // Actions
-      login: (userData: UserResponse, tokens: { access_token: string; refresh_token: string }) => {
+      login: (
+        userData: UserResponse,
+        tokens: { access_token: string; refresh_token: string }
+      ) => {
         set({
           user: userData,
           accessToken: tokens.access_token,
@@ -148,7 +151,7 @@ export const useAuthStore = create<AuthStore>()(
     }),
     {
       name: 'auth-storage',
-      partialize: (state) => ({
+      partialize: state => ({
         user: state.user,
         isAuthenticated: state.isAuthenticated,
         accessToken: state.accessToken,

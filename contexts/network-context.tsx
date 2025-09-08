@@ -25,7 +25,9 @@ export function NetworkProvider({ children }: { children: React.ReactNode }) {
     }
   }, [chainId]);
 
-  const isSupported = chainId ? networks.some(n => n.chain.id === chainId) : false;
+  const isSupported = chainId
+    ? networks.some(n => n.chain.id === chainId)
+    : false;
 
   const value: NetworkContextType = {
     selectedNetwork,
@@ -33,9 +35,7 @@ export function NetworkProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <NetworkContext.Provider value={value}>
-      {children}
-    </NetworkContext.Provider>
+    <NetworkContext.Provider value={value}>{children}</NetworkContext.Provider>
   );
 }
 

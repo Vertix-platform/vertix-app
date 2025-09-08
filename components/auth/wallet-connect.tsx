@@ -3,7 +3,13 @@
 import { usePrivy } from '@privy-io/react-auth';
 import { useAuth } from '@/hooks/use-auth';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import { Wallet, User, LogOut } from 'lucide-react';
 import { formatAddress } from '@/lib/custom-utils';
 import toast from 'react-hot-toast';
@@ -58,9 +64,9 @@ export const WalletConnect: React.FC = () => {
 
   if (!ready) {
     return (
-      <Card className="w-full max-w-md mx-auto">
-        <CardContent className="flex items-center justify-center p-6">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      <Card className='w-full max-w-md mx-auto'>
+        <CardContent className='flex items-center justify-center p-6'>
+          <div className='animate-spin rounded-full h-8 w-8 border-b-2 border-primary'></div>
         </CardContent>
       </Card>
     );
@@ -68,10 +74,10 @@ export const WalletConnect: React.FC = () => {
 
   if (authenticated && user) {
     return (
-      <Card className="w-full max-w-md mx-auto">
+      <Card className='w-full max-w-md mx-auto'>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <User className="h-5 w-5" />
+          <CardTitle className='flex items-center gap-2'>
+            <User className='h-5 w-5' />
             Welcome, {user.first_name || 'User'}!
           </CardTitle>
           <CardDescription>
@@ -79,18 +85,27 @@ export const WalletConnect: React.FC = () => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="space-y-2 text-sm mb-4">
-            <p><strong>Email:</strong> {user.email || 'Not signed up'}</p>
-            <p><strong>Wallet:</strong> {privyUser?.wallet?.address ? formatAddress(privyUser.wallet.address) : 'Not connected'}</p>
-            <p><strong>Verified:</strong> {user.is_verified ? 'Yes' : 'No'}</p>
+          <div className='space-y-2 text-sm mb-4'>
+            <p>
+              <strong>Email:</strong> {user.email || 'Not signed up'}
+            </p>
+            <p>
+              <strong>Wallet:</strong>{' '}
+              {privyUser?.wallet?.address
+                ? formatAddress(privyUser.wallet.address)
+                : 'Not connected'}
+            </p>
+            <p>
+              <strong>Verified:</strong> {user.is_verified ? 'Yes' : 'No'}
+            </p>
           </div>
           <Button
             onClick={handleLogout}
-            variant="outline"
-            className="w-full"
-            size="sm"
+            variant='outline'
+            className='w-full'
+            size='sm'
           >
-            <LogOut className="h-4 w-4 mr-2" />
+            <LogOut className='h-4 w-4 mr-2' />
             Disconnect Wallet
           </Button>
         </CardContent>
@@ -99,39 +114,37 @@ export const WalletConnect: React.FC = () => {
   }
 
   return (
-    <Card className="w-full max-w-md mx-auto">
+    <Card className='w-full max-w-md mx-auto'>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Wallet className="h-5 w-5" />
+        <CardTitle className='flex items-center gap-2'>
+          <Wallet className='h-5 w-5' />
           Connect Your Wallet
         </CardTitle>
-        <CardDescription>
-          Connect your wallet to access Vertix
-        </CardDescription>
+        <CardDescription>Connect your wallet to access Vertix</CardDescription>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className='space-y-4'>
         {error && (
-          <div className="p-3 bg-destructive/10 border border-destructive/20 rounded-md text-destructive text-sm">
+          <div className='p-3 bg-destructive/10 border border-destructive/20 rounded-md text-destructive text-sm'>
             {error}
             <Button
-              variant="ghost"
-              size="sm"
+              variant='ghost'
+              size='sm'
               onClick={clearError}
-              className="ml-2 h-auto p-1"
+              className='ml-2 h-auto p-1'
             >
               ×
             </Button>
           </div>
         )}
 
-        <div className="space-y-3">
+        <div className='space-y-3'>
           <Button
             onClick={handleLogin}
             disabled={isLoading}
-            className="w-full"
-            size="lg"
+            className='w-full'
+            size='lg'
           >
-            <Wallet className="h-4 w-4 mr-2" />
+            <Wallet className='h-4 w-4 mr-2' />
             {isLoading ? 'Connecting...' : 'Connect Wallet'}
           </Button>
 

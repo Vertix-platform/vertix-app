@@ -31,7 +31,8 @@ export const NetworkSelector: React.FC<NetworkSelectorProps> = ({
   const chainId = useChainId();
   const { switchChain, isPending } = useSwitchChain();
 
-  const currentNetwork = networks.find(network => network.chain.id === chainId) || networks[0];
+  const currentNetwork =
+    networks.find(network => network.chain.id === chainId) || networks[0];
 
   const handleNetworkSwitch = async (network: Network) => {
     if (network.chain.id === chainId) return;
@@ -59,42 +60,40 @@ export const NetworkSelector: React.FC<NetworkSelectorProps> = ({
           disabled={isPending}
         >
           {isPending ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
+            <Loader2 className='h-4 w-4 animate-spin' />
           ) : (
-            <NetworkLogo 
-              chainId={currentNetwork.chain.id} 
-              size={20} 
-              className="w-5 h-5" 
+            <NetworkLogo
+              chainId={currentNetwork.chain.id}
+              size={20}
+              className='w-5 h-5'
             />
           )}
-          <span className="hidden sm:inline">
-            {currentNetwork.chain.name}
-          </span>
-          <ChevronDown className="h-4 w-4" />
+          <span className='hidden sm:inline'>{currentNetwork.chain.name}</span>
+          <ChevronDown className='h-4 w-4' />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-56">
-        {networks.map((network) => (
+      <DropdownMenuContent align='end' className='w-56'>
+        {networks.map(network => (
           <DropdownMenuItem
             key={network.chain.id}
             onClick={() => handleNetworkSwitch(network)}
             disabled={network.chain.id === chainId || isPending}
             className={`flex items-center gap-3 ${
-              network.chain.id === chainId
-                ? 'bg-gray-800 !text-white'
-                : ''
+              network.chain.id === chainId ? 'bg-gray-800 !text-white' : ''
             }`}
           >
-            <NetworkLogo 
-              chainId={network.chain.id} 
-              size={20} 
-              className="w-5 h-5" 
+            <NetworkLogo
+              chainId={network.chain.id}
+              size={20}
+              className='w-5 h-5'
             />
-            <div className="">
-              <span className="font-medium text-white">{network.chain.name}</span>
+            <div className=''>
+              <span className='font-medium text-white'>
+                {network.chain.name}
+              </span>
             </div>
             {network.chain.id === chainId && (
-              <RiCheckFill className="ml-auto text-xs text-white" />
+              <RiCheckFill className='ml-auto text-xs text-white' />
             )}
           </DropdownMenuItem>
         ))}

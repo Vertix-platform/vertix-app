@@ -1,8 +1,15 @@
-'use client'
+'use client';
 
-import {createConfig} from '@privy-io/wagmi';
-import { base, baseSepolia, polygon, polygonZkEvm, polygonZkEvmCardona, mainnet } from 'wagmi/chains'
-import { http } from 'viem'
+import { createConfig } from '@privy-io/wagmi';
+import {
+  base,
+  baseSepolia,
+  polygon,
+  polygonZkEvm,
+  polygonZkEvmCardona,
+  mainnet,
+} from 'wagmi/chains';
+import { http } from 'viem';
 
 // Supported chains for the application
 export const supportedChains = [
@@ -11,8 +18,8 @@ export const supportedChains = [
   mainnet, // Ethereum mainnet
   polygon,
   polygonZkEvm,
-  polygonZkEvmCardona
-] as const
+  polygonZkEvmCardona,
+] as const;
 
 // Create Wagmi configuration - Privy handles connectors internally
 export const wagmiConfig = createConfig({
@@ -26,4 +33,4 @@ export const wagmiConfig = createConfig({
     [polygonZkEvmCardona.id]: http(),
   },
   ssr: true, // Enable server-side rendering support
-})
+});

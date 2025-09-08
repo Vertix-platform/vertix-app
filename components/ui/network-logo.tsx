@@ -8,22 +8,20 @@ interface NetworkLogoProps {
   className?: string;
 }
 
-export const NetworkLogo: React.FC<NetworkLogoProps> = ({ 
-  chainId, 
-  size = 24, 
-  className = '' 
+export const NetworkLogo: React.FC<NetworkLogoProps> = ({
+  chainId,
+  size = 24,
+  className = '',
 }) => {
   const network = networks.find(n => n.chain.id === chainId);
-  
+
   if (!network?.icon) {
     return (
-      <div 
+      <div
         className={`bg-gray-400 rounded-full flex items-center justify-center ${className}`}
         style={{ width: size, height: size }}
       >
-        <span className="text-white text-xs font-bold">
-          {chainId}
-        </span>
+        <span className='text-white text-xs font-bold'>{chainId}</span>
       </div>
     );
   }

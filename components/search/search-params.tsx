@@ -24,14 +24,23 @@ export const useSearchParams = (): SearchParams & SearchParamsActions => {
   const [query, setQuery] = useQueryState('q', parseAsString.withDefault(''));
 
   // Type filter parameter
-  const [type, setType] = useQueryState('type', parseAsString.withDefault('all'));
+  const [type, setType] = useQueryState(
+    'type',
+    parseAsString.withDefault('all')
+  );
 
   // Sort parameter
-  const [sort, setSort] = useQueryState('sort', parseAsString.withDefault('relevance'));
+  const [sort, setSort] = useQueryState(
+    'sort',
+    parseAsString.withDefault('relevance')
+  );
 
   // Pagination parameters
   const [page, setPage] = useQueryState('page', parseAsInteger.withDefault(1));
-  const [limit, setLimit] = useQueryState('limit', parseAsInteger.withDefault(20));
+  const [limit, setLimit] = useQueryState(
+    'limit',
+    parseAsInteger.withDefault(20)
+  );
 
   // Reset function
   const reset = () => {
@@ -68,7 +77,10 @@ export const useAdvancedSearchParams = () => {
   const [minPrice, setMinPrice] = useQueryState('minPrice', parseAsInteger);
   const [maxPrice, setMaxPrice] = useQueryState('maxPrice', parseAsInteger);
   const [tags, setTags] = useQueryState('tags', parseAsString.withDefault(''));
-  const [creator, setCreator] = useQueryState('creator', parseAsString.withDefault(''));
+  const [creator, setCreator] = useQueryState(
+    'creator',
+    parseAsString.withDefault('')
+  );
 
   return {
     ...baseParams,
@@ -85,8 +97,8 @@ export const useAdvancedSearchParams = () => {
 
 // Component for search form with URL sync
 export const SearchForm = ({
-  placeholder = "Search NFTs, creators, collections...",
-  className = "",
+  placeholder = 'Search NFTs, creators, collections...',
+  className = '',
   onSearch,
 }: {
   placeholder?: string;
@@ -103,11 +115,11 @@ export const SearchForm = ({
   return (
     <form onSubmit={handleSubmit} className={className}>
       <input
-        type="text"
+        type='text'
         placeholder={placeholder}
         value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        onChange={e => setQuery(e.target.value)}
+        className='w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
       />
     </form>
   );
@@ -118,37 +130,37 @@ export const SearchFilters = () => {
   const { type, sort, setType, setSort } = useSearchParams();
 
   return (
-    <div className="flex flex-wrap items-center gap-4">
+    <div className='flex flex-wrap items-center gap-4'>
       {/* Type Filter */}
-      <div className="flex items-center gap-2">
-        <span className="text-sm font-medium">Type:</span>
+      <div className='flex items-center gap-2'>
+        <span className='text-sm font-medium'>Type:</span>
         <select
           value={type}
-          onChange={(e) => setType(e.target.value as SearchParams['type'])}
-          className="text-sm border rounded-md px-2 py-1"
+          onChange={e => setType(e.target.value as SearchParams['type'])}
+          className='text-sm border rounded-md px-2 py-1'
         >
-          <option value="all">All</option>
-          <option value="nft">NFTs</option>
-          <option value="creator">Creators</option>
-          <option value="collection">Collections</option>
-          <option value="social-media">Social Media</option>
-          <option value="non-nft">Non-NFT</option>
+          <option value='all'>All</option>
+          <option value='nft'>NFTs</option>
+          <option value='creator'>Creators</option>
+          <option value='collection'>Collections</option>
+          <option value='social-media'>Social Media</option>
+          <option value='non-nft'>Non-NFT</option>
         </select>
       </div>
 
       {/* Sort */}
-      <div className="flex items-center gap-2">
-        <span className="text-sm font-medium">Sort by:</span>
+      <div className='flex items-center gap-2'>
+        <span className='text-sm font-medium'>Sort by:</span>
         <select
           value={sort}
-          onChange={(e) => setSort(e.target.value as SearchParams['sort'])}
-          className="text-sm border rounded-md px-2 py-1"
+          onChange={e => setSort(e.target.value as SearchParams['sort'])}
+          className='text-sm border rounded-md px-2 py-1'
         >
-          <option value="relevance">Relevance</option>
-          <option value="price-low">Price: Low to High</option>
-          <option value="price-high">Price: High to Low</option>
-          <option value="newest">Newest</option>
-          <option value="oldest">Oldest</option>
+          <option value='relevance'>Relevance</option>
+          <option value='price-low'>Price: Low to High</option>
+          <option value='price-high'>Price: High to Low</option>
+          <option value='newest'>Newest</option>
+          <option value='oldest'>Oldest</option>
         </select>
       </div>
     </div>
@@ -160,34 +172,34 @@ export const SearchPagination = () => {
   const { page, limit, setPage, setLimit } = useSearchParams();
 
   return (
-    <div className="flex items-center justify-between">
-      <div className="flex items-center gap-2">
-        <span className="text-sm">Show:</span>
+    <div className='flex items-center justify-between'>
+      <div className='flex items-center gap-2'>
+        <span className='text-sm'>Show:</span>
         <select
           value={limit}
-          onChange={(e) => setLimit(Number(e.target.value))}
-          className="text-sm border rounded-md px-2 py-1"
+          onChange={e => setLimit(Number(e.target.value))}
+          className='text-sm border rounded-md px-2 py-1'
         >
           <option value={10}>10</option>
           <option value={20}>20</option>
           <option value={50}>50</option>
           <option value={100}>100</option>
         </select>
-        <span className="text-sm">per page</span>
+        <span className='text-sm'>per page</span>
       </div>
 
-      <div className="flex items-center gap-2">
+      <div className='flex items-center gap-2'>
         <button
           onClick={() => setPage(Math.max(1, page - 1))}
           disabled={page <= 1}
-          className="px-3 py-1 text-sm border rounded-md disabled:opacity-50"
+          className='px-3 py-1 text-sm border rounded-md disabled:opacity-50'
         >
           Previous
         </button>
-        <span className="text-sm">Page {page}</span>
+        <span className='text-sm'>Page {page}</span>
         <button
           onClick={() => setPage(page + 1)}
-          className="px-3 py-1 text-sm border rounded-md"
+          className='px-3 py-1 text-sm border rounded-md'
         >
           Next
         </button>

@@ -35,7 +35,7 @@ const getCookie = (name: string): string | null => {
 const setCookie = (name: string, value: string, days: number = 7): void => {
   if (typeof document === 'undefined') return;
   const expires = new Date();
-  expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
+  expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
   document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/;SameSite=Strict;Secure`;
 };
 
@@ -114,7 +114,9 @@ const makeRequest = async <T>(
           if (!retryResponse.ok) {
             return {
               success: false,
-              error: data.error || `HTTP ${retryResponse.status}: ${retryResponse.statusText}`,
+              error:
+                data.error ||
+                `HTTP ${retryResponse.status}: ${retryResponse.statusText}`,
             };
           }
 
@@ -153,13 +155,16 @@ const refreshTokens = async (): Promise<boolean> => {
   if (!refreshToken) return false;
 
   try {
-    const response = await fetch(`${authConfig.RUST_BACKEND_URL}${API_ENDPOINTS.AUTH.REFRESH}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ refresh_token: refreshToken }),
-    });
+    const response = await fetch(
+      `${authConfig.RUST_BACKEND_URL}${API_ENDPOINTS.AUTH.REFRESH}`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ refresh_token: refreshToken }),
+      }
+    );
 
     if (response.ok) {
       const data: RefreshTokenResponse = await response.json();
@@ -182,11 +187,16 @@ const refreshTokens = async (): Promise<boolean> => {
 
 // Auth API functions
 export const authApi = {
-  register: async (data: RegisterRequest): Promise<ApiResponse<LoginResponse>> => {
-    const response = await makeRequest<LoginResponse>(API_ENDPOINTS.AUTH.REGISTER, {
-      method: 'POST',
-      body: JSON.stringify(data),
-    });
+  register: async (
+    data: RegisterRequest
+  ): Promise<ApiResponse<LoginResponse>> => {
+    const response = await makeRequest<LoginResponse>(
+      API_ENDPOINTS.AUTH.REGISTER,
+      {
+        method: 'POST',
+        body: JSON.stringify(data),
+      }
+    );
 
     if (response.success && response.data) {
       setAccessToken(response.data.access_token);
@@ -197,10 +207,13 @@ export const authApi = {
   },
 
   login: async (data: LoginRequest): Promise<ApiResponse<LoginResponse>> => {
-    const response = await makeRequest<LoginResponse>(API_ENDPOINTS.AUTH.LOGIN, {
-      method: 'POST',
-      body: JSON.stringify(data),
-    });
+    const response = await makeRequest<LoginResponse>(
+      API_ENDPOINTS.AUTH.LOGIN,
+      {
+        method: 'POST',
+        body: JSON.stringify(data),
+      }
+    );
 
     if (response.success && response.data) {
       setAccessToken(response.data.access_token);
@@ -210,11 +223,16 @@ export const authApi = {
     return response;
   },
 
-  refreshToken: async (refreshToken: string): Promise<ApiResponse<RefreshTokenResponse>> => {
-    const response = await makeRequest<RefreshTokenResponse>(API_ENDPOINTS.AUTH.REFRESH, {
-      method: 'POST',
-      body: JSON.stringify({ refresh_token: refreshToken }),
-    });
+  refreshToken: async (
+    refreshToken: string
+  ): Promise<ApiResponse<RefreshTokenResponse>> => {
+    const response = await makeRequest<RefreshTokenResponse>(
+      API_ENDPOINTS.AUTH.REFRESH,
+      {
+        method: 'POST',
+        body: JSON.stringify({ refresh_token: refreshToken }),
+      }
+    );
 
     if (response.success && response.data) {
       setAccessToken(response.data.access_token);
@@ -224,7 +242,9 @@ export const authApi = {
     return response;
   },
 
-  revokeToken: async (refreshToken: string): Promise<ApiResponse<RevokeTokenResponse>> => {
+  revokeToken: async (
+    refreshToken: string
+  ): Promise<ApiResponse<RevokeTokenResponse>> => {
     return makeRequest<RevokeTokenResponse>(API_ENDPOINTS.AUTH.REVOKE, {
       method: 'POST',
       body: JSON.stringify({ refresh_token: refreshToken }),
@@ -237,7 +257,9 @@ export const authApi = {
     });
   },
 
-  connectWallet: async (data: ConnectWalletRequest): Promise<ApiResponse<UserResponse>> => {
+  connectWallet: async (
+    data: ConnectWalletRequest
+  ): Promise<ApiResponse<UserResponse>> => {
     return makeRequest<UserResponse>(API_ENDPOINTS.AUTH.CONNECT_WALLET, {
       method: 'POST',
       body: JSON.stringify(data),
@@ -257,13 +279,20 @@ export const authApi = {
     });
   },
 
-  googleCallback: async (code: string, state: string): Promise<ApiResponse<LoginResponse>> => {
-    const response = await makeRequest<LoginResponse>(API_ENDPOINTS.AUTH.GOOGLE_CALLBACK, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
+  googleCallback: async (
+    code: string,
+    state: string
+  ): Promise<ApiResponse<LoginResponse>> => {
+    const response = await makeRequest<LoginResponse>(
+      API_ENDPOINTS.AUTH.GOOGLE_CALLBACK,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
       },
-    }, `?code=${encodeURIComponent(code)}&state=${encodeURIComponent(state)}`);
+      `?code=${encodeURIComponent(code)}&state=${encodeURIComponent(state)}`
+    );
 
     if (response.success && response.data) {
       setAccessToken(response.data.access_token);
@@ -280,7 +309,9 @@ export const userApi = {
     return makeRequest<UserResponse>(API_ENDPOINTS.USER.PROFILE);
   },
 
-  updateProfile: async (data: UpdateProfileRequest): Promise<ApiResponse<UserResponse>> => {
+  updateProfile: async (
+    data: UpdateProfileRequest
+  ): Promise<ApiResponse<UserResponse>> => {
     return makeRequest<UserResponse>(API_ENDPOINTS.USER.UPDATE_PROFILE, {
       method: 'PUT',
       body: JSON.stringify(data),
@@ -298,12 +329,16 @@ export const contractApi = {
     return makeRequest<boolean>(API_ENDPOINTS.CONTRACT.CHECK_CONNECTION);
   },
 
-
-  initiateSocialMediaNftMint: async (data: InitiateSocialMediaNftMintRequest): Promise<ApiResponse<InitiateSocialMediaNftMintResponse>> => {
-    return makeRequest<InitiateSocialMediaNftMintResponse>(API_ENDPOINTS.CONTRACT.INITIATE_SOCIAL_MEDIA_NFT_MINT, {
-      method: 'POST',
-      body: JSON.stringify(data),
-    });
+  initiateSocialMediaNftMint: async (
+    data: InitiateSocialMediaNftMintRequest
+  ): Promise<ApiResponse<InitiateSocialMediaNftMintResponse>> => {
+    return makeRequest<InitiateSocialMediaNftMintResponse>(
+      API_ENDPOINTS.CONTRACT.INITIATE_SOCIAL_MEDIA_NFT_MINT,
+      {
+        method: 'POST',
+        body: JSON.stringify(data),
+      }
+    );
   },
 
   getAllCollections: async (): Promise<ApiResponse<Collection[]>> => {

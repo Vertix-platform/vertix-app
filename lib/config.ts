@@ -1,8 +1,15 @@
 import { AuthConfig } from '@/types/auth';
-import { base, baseSepolia, polygon, polygonZkEvm, polygonZkEvmCardona } from 'viem/chains';
+import {
+  base,
+  baseSepolia,
+  polygon,
+  polygonZkEvm,
+  polygonZkEvmCardona,
+} from 'viem/chains';
 
 export const authConfig: AuthConfig = {
-  RUST_BACKEND_URL: process.env.NEXT_PUBLIC_RUST_BACKEND_URL || 'http://0.0.0.0:8080',
+  RUST_BACKEND_URL:
+    process.env.NEXT_PUBLIC_RUST_BACKEND_URL || 'http://0.0.0.0:8080',
   PRIVY_APP_ID: process.env.NEXT_PUBLIC_PRIVY_APP_ID || '',
   PRIVY_CLIENT_ID: process.env.NEXT_PUBLIC_PRIVY_CLIENT_ID as string,
 };
@@ -29,7 +36,8 @@ export const API_ENDPOINTS = {
     CHECK_CONNECTION: '/api/v1/contracts/check-connection',
     COLLECTIONS: '/api/v1/contracts/collections',
     MINT_SOCIAL_MEDIA_NFT: '/api/v1/contracts/mint-social-media-nft',
-    INITIATE_SOCIAL_MEDIA_NFT_MINT: '/api/v1/contracts/initiate-social-media-nft-mint',
+    INITIATE_SOCIAL_MEDIA_NFT_MINT:
+      '/api/v1/contracts/initiate-social-media-nft-mint',
     LIST_NFT: '/api/v1/contracts/list-nft',
     LIST_SOCIAL_MEDIA_NFT: '/api/v1/contracts/list-social-media-nft',
     LIST_NFT_FOR_AUCTION: '/api/v1/contracts/list-nft-for-auction',
@@ -44,7 +52,8 @@ export const API_ENDPOINTS = {
     CREATE_COLLECTION: '/api/v1/contracts/create-collection',
     LIST_NON_NFT: '/api/v1/contracts/list-non-nft',
     BUY_NFT_FOR_AUCTION: '/api/v1/contracts/buy-nft-for-auction',
-    BUY_NON_NFT_ASSET_FOR_AUCTION: '/api/v1/contracts/buy-non-nft-asset-for-auction',
+    BUY_NON_NFT_ASSET_FOR_AUCTION:
+      '/api/v1/contracts/buy-non-nft-asset-for-auction',
   },
   DASHBOARD: {
     CREATOR_LISTINGS: '/api/v1/contracts/creator-listings',
@@ -63,16 +72,21 @@ export const PRIVY_CONFIG = {
       showWalletLoginFirst: true,
     },
     defaultChain: polygonZkEvmCardona,
-    supportedChains: [polygon, polygonZkEvmCardona, polygonZkEvm, baseSepolia, base],
+    supportedChains: [
+      polygon,
+      polygonZkEvmCardona,
+      polygonZkEvm,
+      baseSepolia,
+      base,
+    ],
   },
 };
-
 
 export const PAGE_ROUTES = {
   HOME: '/',
   AUTH: {
-    LOGIN: "/login",
-    SIGNUP: "/signup"
+    LOGIN: '/login',
+    SIGNUP: '/signup',
   },
   LISTINGS_SECTION: {
     NFT_LISTINGS: '/listings',

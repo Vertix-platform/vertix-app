@@ -41,10 +41,10 @@ export function ThemeProvider({
 
   useEffect(() => {
     if (!mounted) return;
-    
+
     const root = window.document.documentElement;
     root.classList.remove('light', 'dark');
-    
+
     if (theme === 'light') {
       root.classList.add('light');
     } else {
@@ -77,4 +77,3 @@ export const useTheme = () => {
 
   return context;
 };
-
