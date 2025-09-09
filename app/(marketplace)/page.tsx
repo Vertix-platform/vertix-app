@@ -1,16 +1,42 @@
-import { Suspense } from 'react';
+'use client';
+
+import { useState, useEffect } from 'react';
 import { CollectionsGrid } from './collections/components/collections-grid';
 import { CollectionsLoadingSkeleton } from './collections/components/loading-skeleton';
-import { getCollections } from '@/lib/server-actions';
+import { apiClient } from '@/lib/api';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
+import type { Collection } from '@/types/listings';
 
-async function CollectionsPreview() {
-  try {
-    const collections = await getCollections();
+export default function ExplorePage() {
+  const [collections, setCollections] = useState<Collection[]>([]);
+  const [loading, setLoading] = useState(true);
 
-    // Only show first 3 collections as preview
+  useEffect(() => {
+    const fetchCollections = async () => {
+      try {
+        setLoading(true);
+        const response = await apiClient.getAllCollections();
+        const data = response.data || [];
+        setCollections(data);
+      } catch (error) {
+        console.error('Error loading collections preview:', error);
+        setCollections([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCollections();
+  }, []);
+
+  const renderCollectionsPreview = () => {
+    if (loading) {
+      return <CollectionsLoadingSkeleton />;
+    }
+
+    // Only show first 4 collections as preview
     const previewCollections = collections.slice(0, 4);
 
     if (previewCollections.length === 0) {
@@ -31,13 +57,7 @@ async function CollectionsPreview() {
         <CollectionsGrid collections={previewCollections} />
       </div>
     );
-  } catch (error) {
-    console.error('Error loading collections preview:', error);
-    return null;
-  }
-}
-
-export default function ExplorePage() {
+  };
   return (
     <div className='min-h-screen'>
       <section className='container mx-auto px-4 py-8'>
@@ -52,9 +72,7 @@ export default function ExplorePage() {
             </p>
           </div>
 
-          <Suspense fallback={<CollectionsLoadingSkeleton />}>
-            <CollectionsPreview />
-          </Suspense>
+          {renderCollectionsPreview()}
         </div>
       </section>
     </div>
