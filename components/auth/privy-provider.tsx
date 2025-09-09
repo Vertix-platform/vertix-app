@@ -26,6 +26,16 @@ export const PrivyProviderWrapper: React.FC<PrivyProviderWrapperProps> = ({
         },
       })
   );
+
+  // Don't render Privy provider during build time if app ID is missing
+  if (!PRIVY_CONFIG.appId || PRIVY_CONFIG.appId === '') {
+    return (
+      <QueryClientProvider client={queryClient}>
+        <WagmiProvider config={wagmiConfig}>{children}</WagmiProvider>
+      </QueryClientProvider>
+    );
+  }
+
   return (
     <PrivyProvider
       key={'vertix-privy-provider'}
