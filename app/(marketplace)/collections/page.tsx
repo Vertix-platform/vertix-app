@@ -1,36 +1,45 @@
-import { Suspense } from 'react';
+'use client';
+
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 import Link from 'next/link';
 import { CollectionsGrid } from './components/collections-grid';
 import { CollectionsLoadingSkeleton } from './components/loading-skeleton';
-import { getCollections } from '@/lib/server-actions';
+import { apiClient } from '@/lib/api';
+import type { Collection } from '@/types/listings';
 
-// Error boundary component for collections fetching
-async function CollectionsData() {
-  try {
-    const collections = await getCollections();
-    return <CollectionsGrid collections={collections} />;
-  } catch (error) {
-    const errorMessage =
-      error instanceof Error ? error.message : 'An unexpected error occurred';
-    return (
-      <div className='bg-red-50 border border-red-200 rounded-lg p-4'>
-        <p className='text-red-800'>Error: {errorMessage}</p>
-        <Button
-          variant='outline'
-          size='sm'
-          onClick={() => window.location.reload()}
-          className='mt-2'
-        >
-          Retry
-        </Button>
-      </div>
-    );
-  }
-}
+export default function CollectionsPage() {
+  const [collections, setCollections] = useState<Collection[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-export default async function CollectionsPage() {
+  useEffect(() => {
+    const fetchCollections = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const response = await apiClient.getAllCollections();
+        const data = response.data || [];
+        setCollections(data);
+      } catch (err) {
+        const errorMessage =
+          err instanceof Error ? err.message : 'An unexpected error occurred';
+        setError(errorMessage);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCollections();
+  }, []);
+
+  const handleRetry = () => {
+    setError(null);
+    setLoading(true);
+    // Trigger re-fetch
+    window.location.reload();
+  };
   return (
     <div className='min-h-screen'>
       <section className='container mx-auto px-4 py-8'>
@@ -50,9 +59,23 @@ export default async function CollectionsPage() {
             </Link>
           </div>
 
-          <Suspense fallback={<CollectionsLoadingSkeleton />}>
-            <CollectionsData />
-          </Suspense>
+          {loading ? (
+            <CollectionsLoadingSkeleton />
+          ) : error ? (
+            <div className='bg-red-50 border border-red-200 rounded-lg p-4'>
+              <p className='text-red-800'>Error: {error}</p>
+              <Button
+                variant='outline'
+                size='sm'
+                onClick={handleRetry}
+                className='mt-2'
+              >
+                Retry
+              </Button>
+            </div>
+          ) : (
+            <CollectionsGrid collections={collections} />
+          )}
         </div>
       </section>
     </div>
