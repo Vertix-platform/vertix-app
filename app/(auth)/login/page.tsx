@@ -30,7 +30,7 @@ import type { LoginRequest } from '@/types/auth';
 import { RiGoogleFill } from '@remixicon/react';
 
 const loginSchema = z.object({
-  email: z.email('Please enter a valid email address'),
+  email: z.string().email('Please enter a valid email address'),
   password: z.string().min(6, 'Password must be at least 6 characters'),
 });
 
@@ -54,8 +54,8 @@ export default function LoginPage() {
     try {
       clearError();
       const loginData: LoginRequest = {
-        email: data.email,
-        password: data.password,
+        email: data.email as string,
+        password: data.password as string,
       };
 
       await loginWithEmail(loginData);

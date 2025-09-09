@@ -33,7 +33,7 @@ const signupSchema = z
   .object({
     first_name: z.string().min(2, 'First name must be at least 2 characters'),
     last_name: z.string().min(2, 'Last name must be at least 2 characters'),
-    email: z.email('Please enter a valid email address'),
+    email: z.string().email('Please enter a valid email address'),
     password: z.string().min(8, 'Password must be at least 8 characters'),
     confirmPassword: z.string(),
   })
@@ -66,10 +66,10 @@ export default function SignupPage() {
     try {
       clearError();
       const signupData: RegisterRequest = {
-        first_name: data.first_name,
-        last_name: data.last_name,
-        email: data.email,
-        password: data.password,
+        first_name: data.first_name as string,
+        last_name: data.last_name as string,
+        email: data.email as string,
+        password: data.password as string,
       };
 
       await register(signupData);
