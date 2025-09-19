@@ -7,7 +7,6 @@ import {
   isSupportedChain,
 } from '@/lib/contracts/addresses';
 import { apiClient } from '@/lib/api';
-
 export interface CreatorNFT {
   id: string;
   tokenId: number;
@@ -120,26 +119,22 @@ export function useCreatorNFTs() {
         }
 
         // Convert API response to CreatorNFT format using real data
-        const userNFTs: CreatorNFT[] = response.data.map(
-          (nft: Record<string, unknown>) => ({
-            id: String(nft.id),
-            tokenId: Number(nft.token_id),
-            name: String(nft.name),
-            image: String(nft.image),
-            description: String(nft.description),
-            collectionId: nft.collection_id
-              ? Number(nft.collection_id)
-              : undefined,
-            collectionName: nft.collection_name
-              ? String(nft.collection_name)
-              : undefined, // Real collection name
-            isListed: Boolean(nft.is_listed),
-            mintedAt: String(nft.minted_at),
-            metadataUri: String(nft.metadata_uri),
-            owner: String(nft.owner),
-            royaltyBps: Number(nft.royalty_bps),
-          })
-        );
+        const userNFTs: CreatorNFT[] = response.data.map(nft => ({
+          id: String(nft.listing_id),
+          tokenId: Number(nft.token_id),
+          name: String(nft.name),
+          image: String(nft.image),
+          description: String(nft.description),
+          collectionId: undefined, // Not available in Listing type
+          collectionName: nft.collection_name
+            ? String(nft.collection_name)
+            : undefined,
+          isListed: true, // All items in listings are inherently listed
+          mintedAt: String(nft.created_at),
+          metadataUri: String(nft.token_uri),
+          owner: String(nft.seller_address),
+          royaltyBps: Number(nft.royalty_bps),
+        }));
 
         setNfts(userNFTs);
       } catch (err) {

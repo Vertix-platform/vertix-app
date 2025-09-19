@@ -30,7 +30,6 @@ import {
   Link2,
   ShoppingCart,
   Gavel,
-  ExternalLink,
   Clock,
   AlertCircle,
   Loader2,
