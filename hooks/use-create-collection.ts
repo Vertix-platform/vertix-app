@@ -60,7 +60,7 @@ export function useCreateCollection() {
         isLoading: false,
       }));
     }
-  }, [txHash, pendingTxHash]);
+  }, [txHash]);
 
   // Wait for transaction confirmation
   const {

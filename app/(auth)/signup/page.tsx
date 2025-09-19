@@ -73,9 +73,7 @@ export default function SignupPage() {
       };
 
       await register(signupData);
-      toast.success(
-        'Account created successfully! Please check your email to verify your account.'
-      );
+      toast.success('Account created successfully!');
       router.push('/login');
     } catch (err) {
       toast.error(error || 'Failed to create account');

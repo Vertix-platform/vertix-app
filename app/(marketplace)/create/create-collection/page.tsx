@@ -1,13 +1,6 @@
 'use client';
 
 import { useState, useRef } from 'react';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -26,6 +19,7 @@ import { useCreateCollection } from '@/hooks/use-create-collection';
 import { isSupportedChain } from '@/lib/contracts/addresses';
 import { supportedChains } from '@/lib/wagmi/config';
 import { toast } from 'react-hot-toast';
+import Image from 'next/image';
 
 interface CreateCollectionFormData {
   name: string;
@@ -35,8 +29,12 @@ interface CreateCollectionFormData {
 }
 
 const CreateCollectionPage = () => {
-  const { authenticated, login: privyLogin, ready } = usePrivy();
-  const { address, isConnected } = useAccount();
+  const {
+    authenticated,
+    login: privyLogin,
+    ready,
+    user: privyUser,
+  } = usePrivy();
   const chainId = useChainId();
   const {
     uploadFile,
@@ -131,7 +129,7 @@ const CreateCollectionPage = () => {
   };
 
   const handleCreateCollection = async () => {
-    if (!authenticated || !address) {
+    if (!authenticated || !privyUser?.wallet?.address) {
       toast.error('Please connect your wallet first');
       return;
     }
@@ -185,7 +183,7 @@ const CreateCollectionPage = () => {
   return (
     <div className='min-h-screen'>
       <section className='container mx-auto px-4 py-8'>
-        <div className='max-w-2xl mx-auto'>
+        <div>
           {/* Header */}
           <div className='mb-8'>
             <PageBreadcrumb
@@ -205,14 +203,8 @@ const CreateCollectionPage = () => {
           </div>
 
           {/* Collection Details Form */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Collection Details</CardTitle>
-              <CardDescription>
-                Provide the details for your new NFT collection.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className='space-y-6'>
+          <div>
+            <div className='space-y-6'>
               {/* Collection Image */}
               <div className='space-y-2'>
                 <Label>Collection Image *</Label>
@@ -228,6 +220,7 @@ const CreateCollectionPage = () => {
                     variant='outline'
                     onClick={() => fileInputRef.current?.click()}
                     disabled={isProcessing}
+                    className='h-10 px-4 py-2 rounded-xl'
                   >
                     <ImageIcon className='h-4 w-4 mr-2' />
                     Choose Image
@@ -258,76 +251,100 @@ const CreateCollectionPage = () => {
               </div>
 
               {/* Collection Name */}
-              <div className='space-y-2'>
-                <Label htmlFor='name'>Collection Name *</Label>
-                <Input
-                  id='name'
-                  placeholder='My Awesome Collection'
-                  value={formData.name}
-                  onChange={e => handleInputChange('name', e.target.value)}
-                  disabled={isProcessing}
-                />
-                <p className='text-sm text-muted-foreground'>
-                  A descriptive name for your collection (max 100 characters)
-                </p>
+              <div className='max-w-[480px]'>
+                <div className='min-w-40 space-y-2'>
+                  <Label htmlFor='name'>Collection Name *</Label>
+                  <Input
+                    id='name'
+                    placeholder='My Awesome Collection'
+                    value={formData.name}
+                    onChange={e => handleInputChange('name', e.target.value)}
+                    disabled={isProcessing}
+                    className='flex w-full min-w-0 flex-1 rounded-xl border h-14 p-[15px] pr-2 text-base font-normal leading-normal'
+                  />
+                  <p className='text-sm text-muted-foreground'>
+                    A descriptive name for your collection (max 100 characters)
+                  </p>
+                </div>
               </div>
 
               {/* Collection Symbol */}
-              <div className='space-y-2'>
-                <Label htmlFor='symbol'>Collection Symbol *</Label>
-                <Input
-                  id='symbol'
-                  placeholder='MAC'
-                  value={formData.symbol}
-                  onChange={e => handleInputChange('symbol', e.target.value)}
-                  disabled={isProcessing}
-                  maxLength={20}
-                />
-                <p className='text-sm text-muted-foreground'>
-                  A short symbol for your collection (max 20 characters)
-                </p>
+              <div className='max-w-[480px]'>
+                <div className='min-w-40 space-y-2'>
+                  <Label htmlFor='symbol'>Collection Symbol *</Label>
+                  <Input
+                    id='symbol'
+                    placeholder='MAC'
+                    value={formData.symbol}
+                    onChange={e => handleInputChange('symbol', e.target.value)}
+                    disabled={isProcessing}
+                    maxLength={20}
+                    className='flex w-full min-w-0 flex-1 rounded-xl border h-14 p-[15px] pr-2 text-base font-normal leading-normal'
+                  />
+                  <p className='text-sm text-muted-foreground'>
+                    A short symbol for your collection (max 20 characters)
+                  </p>
+                </div>
               </div>
 
               {/* Max Supply */}
-              <div className='space-y-2'>
-                <Label htmlFor='max_supply'>Maximum Supply</Label>
-                <Input
-                  id='max_supply'
-                  type='number'
-                  placeholder='100'
-                  value={formData.max_supply}
-                  onChange={e =>
-                    handleInputChange('max_supply', e.target.value)
-                  }
-                  disabled={isProcessing}
-                  min='1'
-                  max='1000'
-                />
-                <p className='text-sm text-muted-foreground'>
-                  Maximum number of NFTs in this collection (1-1000)
-                </p>
+              <div className='max-w-[480px]'>
+                <div className='min-w-40 space-y-2'>
+                  <Label htmlFor='max_supply'>Maximum Supply</Label>
+                  <Input
+                    id='max_supply'
+                    type='number'
+                    placeholder='100'
+                    value={formData.max_supply}
+                    onChange={e =>
+                      handleInputChange('max_supply', e.target.value)
+                    }
+                    disabled={isProcessing}
+                    min='1'
+                    max='1000'
+                    className='flex w-full min-w-0 flex-1 rounded-xl border h-14 p-[15px] pr-2 text-base font-normal leading-normal'
+                  />
+                  <p className='text-sm text-muted-foreground'>
+                    Maximum number of NFTs in this collection (1-1000)
+                  </p>
+                </div>
               </div>
 
+              {/* Collection Preview */}
+              {formData.image && (
+                <div className='max-w-[480px]'>
+                  <div className='min-w-40 space-y-2'>
+                    <Label>Collection Preview</Label>
+                  </div>
+                  <div className='flex items-center space-x-4 my-2'>
+                    <Image
+                      src={URL.createObjectURL(formData.image)}
+                      alt='Collection Preview'
+                      className='w-full h-[300] rounded-xl'
+                      width={480}
+                      height={480}
+                    />
+                  </div>
+                  <p className='text-sm text-muted-foreground'>
+                    Preview of your collection image
+                  </p>
+                </div>
+              )}
+
               {/* Wallet & Network Info */}
-              {authenticated && isConnected && address ? (
+              {authenticated && privyUser?.wallet?.address ? (
                 <div className='space-y-3'>
-                  <div className='p-4 bg-muted rounded-lg'>
+                  <div className=''>
                     <div className='text-sm font-medium mb-1'>
                       Connected Wallet:
                     </div>
                     <div className='text-sm text-muted-foreground font-mono'>
-                      {address}
+                      {privyUser?.wallet?.address}
                     </div>
                   </div>
 
                   {/* Network Status */}
-                  <div
-                    className={`p-4 rounded-lg border ${
-                      isSupportedChain(chainId)
-                        ? 'bg-green-50 border-green-200 dark:bg-green-950 dark:border-green-800'
-                        : 'bg-red-50 border-red-200 dark:bg-red-950 dark:border-red-800'
-                    }`}
-                  >
+                  <div>
                     <div className='flex items-center space-x-2'>
                       {isSupportedChain(chainId) ? (
                         <>
@@ -382,7 +399,7 @@ const CreateCollectionPage = () => {
                   )}
                 </div>
               ) : (
-                <div className='p-4 bg-amber-50 border border-amber-200 rounded-lg dark:bg-amber-950 dark:border-amber-800'>
+                <div className='max-w-[480px] p-4 bg-amber-50 border border-amber-200 rounded-xl dark:bg-amber-950 dark:border-amber-800'>
                   <div className='flex items-center space-x-2'>
                     <Wallet className='w-4 h-4 text-amber-600' />
                     <span className='text-sm font-medium text-amber-800 dark:text-amber-200'>
@@ -396,46 +413,51 @@ const CreateCollectionPage = () => {
               )}
 
               {/* Create Collection Button */}
-              <Button
-                onClick={handleCreateCollection}
-                disabled={
-                  !canCreate ||
-                  !formData.image ||
-                  !formData.name.trim() ||
-                  !formData.symbol.trim() ||
-                  isProcessing ||
-                  isIPFSUploading
-                }
-                className='w-full'
-                size='lg'
-              >
-                {isProcessing || isIPFSUploading ? (
-                  <>
-                    <div className='animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2' />
-                    {isIPFSUploading
-                      ? 'Uploading to IPFS...'
-                      : 'Creating Collection...'}
-                  </>
-                ) : (
-                  <>
-                    <Upload className='h-4 w-4 mr-2' />
-                    Create Collection
-                  </>
-                )}
-              </Button>
+              {authenticated && privyUser?.wallet?.address && (
+                <div className='flex lg:justify-end'>
+                  <Button
+                    onClick={handleCreateCollection}
+                    disabled={
+                      !canCreate ||
+                      !formData.image ||
+                      !formData.name.trim() ||
+                      !formData.symbol.trim() ||
+                      isProcessing ||
+                      isIPFSUploading
+                    }
+                    className='flex w-full lg:min-w-[84px] lg:max-w-[480px] cursor-pointer items-center justify-center rounded-full h-12 px-5'
+                    size='lg'
+                  >
+                    {isProcessing || isIPFSUploading ? (
+                      <>
+                        <div className='animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2' />
+                        {isIPFSUploading
+                          ? 'Uploading to IPFS...'
+                          : 'Creating Collection...'}
+                      </>
+                    ) : (
+                      <>
+                        <Upload className='h-4 w-4 mr-2' />
+                        Create Collection
+                      </>
+                    )}
+                  </Button>
+                </div>
+              )}
 
               {!authenticated && (
-                <div className='text-center space-y-4'>
-                  <p className='text-sm text-muted-foreground'>
-                    Please connect your wallet to create a collection
-                  </p>
-                  <Button onClick={privyLogin} disabled={!ready}>
+                <div className=''>
+                  <Button
+                    onClick={privyLogin}
+                    disabled={!ready}
+                    className='h-10 px-4 py-2 w-full lg:min-w-[84px] lg:max-w-[480px] rounded-xl'
+                  >
                     Connect Wallet
                   </Button>
                 </div>
               )}
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         </div>
       </section>
     </div>

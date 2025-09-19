@@ -24,7 +24,7 @@ const CreatePage = () => {
 
           <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
             {/* Create NFTs */}
-            <Card className='hover:shadow-lg transition-shadow'>
+            <Card className='hover:shadow-lg transition-shadow flex flex-col justify-between'>
               <CardHeader>
                 <div className='flex items-center space-x-2'>
                   <FileImage className='h-6 w-6 text-blue-500' />
@@ -45,7 +45,7 @@ const CreatePage = () => {
             </Card>
 
             {/* Create Collection */}
-            <Card className='hover:shadow-lg transition-shadow'>
+            <Card className='hover:shadow-lg transition-shadow flex flex-col justify-between'>
               <CardHeader>
                 <div className='flex items-center space-x-2'>
                   <Globe className='h-6 w-6 text-purple-500' />
@@ -66,7 +66,7 @@ const CreatePage = () => {
             </Card>
 
             {/* List Asset */}
-            <Card className='hover:shadow-lg transition-shadow'>
+            <Card className='hover:shadow-lg transition-shadow flex flex-col justify-between'>
               <CardHeader>
                 <div className='flex items-center space-x-2'>
                   <Plus className='h-6 w-6 text-green-500' />
@@ -81,7 +81,7 @@ const CreatePage = () => {
                   List your NFTs, social media accounts, or other digital
                   assets.
                 </p>
-                <Link href='/listings'>
+                <Link href='/create/list-asset'>
                   <Button className='w-full'>List Asset</Button>
                 </Link>
               </CardContent>

@@ -6,9 +6,7 @@ import {
   getContractAddress,
   isSupportedChain,
 } from '@/lib/contracts/addresses';
-import { VERTIX_NFT_ABI } from '@/lib/contracts/abis/vertix-nft';
-import { useReadContract } from 'wagmi';
-import { formatUnits } from 'viem';
+import { apiClient } from '@/lib/api';
 
 export interface CreatorNFT {
   id: string;
@@ -69,17 +67,7 @@ export function useCreatorNFTs() {
     ? getContractAddress(chainId, 'VertixNFT')
     : undefined;
 
-  // Read all collections to find user's collections
-  const { data: allCollections, isLoading: isLoadingCollections } =
-    useReadContract({
-      address: contractAddress,
-      abi: VERTIX_NFT_ABI,
-      functionName: 'collections',
-      args: [BigInt(0)], // This would need to be implemented differently to get all collections
-      query: {
-        enabled: !!contractAddress && isConnected,
-      },
-    });
+  // Note: Collections are now fetched via API instead of direct contract calls
 
   const fetchUserNFTs = useCallback(
     async (walletAddress: string) => {
@@ -94,46 +82,66 @@ export function useCreatorNFTs() {
       setError(null);
 
       try {
-        // TODO: Implement actual contract calls to fetch user's NFTs
-        // This would involve:
-        // 1. Getting all token IDs owned by the user
-        // 2. Fetching metadata for each token
-        // 3. Checking if tokens are listed on marketplace
-        // 4. Getting collection information
+        // const mockNFTs: CreatorNFT[] = [
+        //   {
+        //     id: '1',
+        //     tokenId: 1,
+        //     name: 'Cool NFT #1',
+        //     image: '/images/nft-placeholder.png',
+        //     description: 'A really cool NFT',
+        //     collectionId: 1,
+        //     collectionName: 'Cool Collection',
+        //     isListed: true,
+        //     listingPrice: 0.5,
+        //     listingId: 101,
+        //     mintedAt: '2024-01-15T10:30:00Z',
+        //     metadataUri: 'ipfs://QmExample1',
+        //     owner: walletAddress,
+        //     royaltyBps: 500,
+        //   },
+        //   {
+        //     id: '2',
+        //     tokenId: 2,
+        //     name: 'Awesome Art #2',
+        //     image: '/images/nft-placeholder.png',
+        //     description: 'Awesome digital art',
+        //     isListed: false,
+        //     mintedAt: '2024-01-14T15:45:00Z',
+        //     metadataUri: 'ipfs://QmExample2',
+        //     owner: walletAddress,
+        //     royaltyBps: 500,
+        //   },
+        // ];
+        // Fetch user's NFTs from the backend
+        const response = await apiClient.getUserNFTs(walletAddress, 100, 0);
 
-        // For now, return mock data
-        const mockNFTs: CreatorNFT[] = [
-          {
-            id: '1',
-            tokenId: 1,
-            name: 'Cool NFT #1',
-            image: '/images/nft-placeholder.png',
-            description: 'A really cool NFT',
-            collectionId: 1,
-            collectionName: 'Cool Collection',
-            isListed: true,
-            listingPrice: 0.5,
-            listingId: 101,
-            mintedAt: '2024-01-15T10:30:00Z',
-            metadataUri: 'ipfs://QmExample1',
-            owner: walletAddress,
-            royaltyBps: 500,
-          },
-          {
-            id: '2',
-            tokenId: 2,
-            name: 'Awesome Art #2',
-            image: '/images/nft-placeholder.png',
-            description: 'Awesome digital art',
-            isListed: false,
-            mintedAt: '2024-01-14T15:45:00Z',
-            metadataUri: 'ipfs://QmExample2',
-            owner: walletAddress,
-            royaltyBps: 500,
-          },
-        ];
+        if (!response.success || !response.data) {
+          throw new Error(response.error || 'Failed to fetch NFTs');
+        }
 
-        setNfts(mockNFTs);
+        // Convert API response to CreatorNFT format using real data
+        const userNFTs: CreatorNFT[] = response.data.map(
+          (nft: Record<string, unknown>) => ({
+            id: String(nft.id),
+            tokenId: Number(nft.token_id),
+            name: String(nft.name),
+            image: String(nft.image),
+            description: String(nft.description),
+            collectionId: nft.collection_id
+              ? Number(nft.collection_id)
+              : undefined,
+            collectionName: nft.collection_name
+              ? String(nft.collection_name)
+              : undefined, // Real collection name
+            isListed: Boolean(nft.is_listed),
+            mintedAt: String(nft.minted_at),
+            metadataUri: String(nft.metadata_uri),
+            owner: String(nft.owner),
+            royaltyBps: Number(nft.royalty_bps),
+          })
+        );
+
+        setNfts(userNFTs);
       } catch (err) {
         console.error('Failed to fetch user NFTs:', err);
         setError(err instanceof Error ? err.message : 'Failed to fetch NFTs');

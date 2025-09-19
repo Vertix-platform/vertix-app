@@ -1,37 +1,42 @@
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { CardBody, CardContainer, CardItem } from '@/components/ui/3d-card';
 
 export function CollectionsLoadingSkeleton() {
   return (
-    <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
-      {[...Array(6)].map((_, i) => (
-        <Card key={i} className='animate-pulse'>
-          <CardHeader className='pb-4'>
-            <div className='h-32 bg-gray-200 rounded-lg mb-4'></div>
-            <div className='h-4 bg-gray-200 rounded mb-2'></div>
-            <div className='h-3 bg-gray-200 rounded mb-2'></div>
-            <div className='h-3 bg-gray-200 rounded w-2/3'></div>
-          </CardHeader>
-          <CardContent className='pt-0'>
-            <div className='space-y-3'>
-              <div className='flex justify-between'>
-                <div className='h-3 bg-gray-200 rounded w-16'></div>
-                <div className='h-3 bg-gray-200 rounded w-24'></div>
+    <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4'>
+      {[...Array(8)].map((_, i) => (
+        <CardContainer
+          key={i}
+          className='hover:shadow-lg transition-shadow bg-card text-card-foreground border rounded-xl h-full min-w-full animate-pulse'
+        >
+          <CardBody className='relative group/card border-black/[0.1] h-full rounded-xl p-2 border'>
+            {/* Image Section */}
+            <CardItem translateZ='100' className='w-full'>
+              <div className='w-full h-[200px] bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-600 rounded-lg'></div>
+            </CardItem>
+
+            {/* Content Section */}
+            <div className='mt-4'>
+              {/* Name and Collection ID */}
+              <div className='flex justify-between items-center'>
+                <CardItem className='text-xl'>
+                  <div className='h-6 bg-gray-300 dark:bg-gray-600 rounded w-32'></div>
+                </CardItem>
+                <CardItem className='flex items-center gap-0.5'>
+                  <div className='w-4 h-4 bg-gray-300 dark:bg-gray-600 rounded'></div>
+                  <div className='h-4 bg-gray-300 dark:bg-gray-600 rounded w-8'></div>
+                </CardItem>
               </div>
-              <div className='flex justify-between'>
-                <div className='h-3 bg-gray-200 rounded w-12'></div>
-                <div className='h-3 bg-gray-200 rounded w-16'></div>
-              </div>
-              <div className='flex justify-between'>
-                <div className='h-3 bg-gray-200 rounded w-20'></div>
-                <div className='h-3 bg-gray-200 rounded w-12'></div>
-              </div>
+
+              {/* Creator Section */}
+              <CardItem className='flex items-center justify-between gap-1.5 text-sm mt-2'>
+                {/* Avatar */}
+                <div className='w-8 h-8 bg-gray-300 dark:bg-gray-600 rounded-full'></div>
+                {/* Creator Address */}
+                <div className='h-4 bg-gray-300 dark:bg-gray-600 rounded w-20'></div>
+              </CardItem>
             </div>
-            <div className='mt-4 flex gap-2'>
-              <div className='h-8 bg-gray-200 rounded flex-1'></div>
-              <div className='h-8 bg-gray-200 rounded flex-1'></div>
-            </div>
-          </CardContent>
-        </Card>
+          </CardBody>
+        </CardContainer>
       ))}
     </div>
   );

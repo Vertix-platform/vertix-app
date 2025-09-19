@@ -35,10 +35,11 @@ export const API_ENDPOINTS = {
     SUPPORTED_CHAINS: '/api/v1/contracts/supported-chains',
     CHECK_CONNECTION: '/api/v1/contracts/check-connection',
     COLLECTIONS: '/api/v1/contracts/collections',
+    USER_NFTS: '/api/v1/contracts/user-nfts',
+    LISTINGS: '/api/v1/contracts/listings',
     MINT_SOCIAL_MEDIA_NFT: '/api/v1/contracts/mint-social-media-nft',
     INITIATE_SOCIAL_MEDIA_NFT_MINT:
       '/api/v1/contracts/initiate-social-media-nft-mint',
-    LIST_NFT: '/api/v1/contracts/list-nft',
     LIST_SOCIAL_MEDIA_NFT: '/api/v1/contracts/list-social-media-nft',
     LIST_NFT_FOR_AUCTION: '/api/v1/contracts/list-nft-for-auction',
     BUY_NFT: '/api/v1/contracts/buy-nft',
@@ -92,7 +93,7 @@ export const PAGE_ROUTES = {
     NFT_LISTINGS: '/listings',
     NON_NFT_LISTINGS: '/non-nft-listings',
     SOCIAL_MEDIA_LISTINGS: '/social-media-listings',
-    LISTING_DETAILS: '/listings/',
+    LISTING_DETAILS: '/listing/',
     NON_NFT_LISTING_DETAILS: '/non-nft-listings/',
     SOCIAL_MEDIA_LISTING_DETAILS: '/social-media-listings/',
   },
@@ -106,7 +107,7 @@ export const PAGE_ROUTES = {
     COLLECTION_DETAILS: '/collections/',
   },
   MARKETPLACE_SECTION: {
-    MARKETPLACE: '/',
+    MARKETPLACE: '/marketplace',
   },
   MINT_SECTION: {
     MINT: '/mint',

@@ -15,13 +15,10 @@ import type {
 import type {
   InitiateSocialMediaNftMintRequest,
   InitiateSocialMediaNftMintResponse,
-  MintSocialMediaNftRequest,
-  MintSocialMediaNftResponse,
   NetworkInfo,
-  Collection,
-  CreateCollectionRequest,
-  CreateCollectionResponse,
+  CollectionsResponse,
 } from '@/types/listings';
+import type { Listing } from '@/hooks/use-listings';
 
 // Cookie utility functions
 const getCookie = (name: string): string | null => {
@@ -109,37 +106,42 @@ const makeRequest = async <T>(
             ...options,
           };
           const retryResponse = await fetch(url, retryConfig);
-          const data = await retryResponse.json();
+          const retryData = await retryResponse.json();
 
           if (!retryResponse.ok) {
             return {
               success: false,
               error:
-                data.error ||
+                retryData.error ||
                 `HTTP ${retryResponse.status}: ${retryResponse.statusText}`,
             };
           }
 
           return {
             success: true,
-            data,
+            data: retryData.data,
           };
         }
       }
     }
 
-    const data = await response.json();
+    const responseData = await response.json();
 
     if (!response.ok) {
       return {
         success: false,
-        error: data.error || `HTTP ${response.status}: ${response.statusText}`,
+        error:
+          responseData.error ||
+          `HTTP ${response.status}: ${response.statusText}`,
       };
     }
 
+    // Extract the actual data from the backend response
+    // Backend returns: { success: true, data: [...], message: "..." }
+    // We want to return just the data part
     return {
       success: true,
-      data,
+      data: responseData.data,
     };
   } catch (error) {
     return {
@@ -341,8 +343,38 @@ export const contractApi = {
     );
   },
 
-  getAllCollections: async (): Promise<ApiResponse<Collection[]>> => {
-    return makeRequest<Collection[]>(API_ENDPOINTS.CONTRACT.COLLECTIONS);
+  getAllCollections: async (
+    limit?: number,
+    offset?: number
+  ): Promise<ApiResponse<CollectionsResponse>> => {
+    const params = new URLSearchParams();
+    if (limit) params.append('limit', limit.toString());
+    if (offset) params.append('offset', offset.toString());
+    const queryString = params.toString();
+    return makeRequest<CollectionsResponse>(
+      `${API_ENDPOINTS.CONTRACT.COLLECTIONS}${queryString ? `?${queryString}` : ''}`
+    );
+  },
+
+  getUserNFTs: async (
+    walletAddress: string,
+    limit?: number,
+    offset?: number
+  ): Promise<ApiResponse<Listing[]>> => {
+    const params = new URLSearchParams({
+      wallet_address: walletAddress,
+      ...(limit && { limit: limit.toString() }),
+      ...(offset && { offset: offset.toString() }),
+    });
+    return makeRequest<Listing[]>(
+      `${API_ENDPOINTS.CONTRACT.USER_NFTS}?${params}`
+    );
+  },
+
+  getListingById: async (listingId: string): Promise<ApiResponse<Listing>> => {
+    return makeRequest<Listing>(
+      `${API_ENDPOINTS.CONTRACT.LISTINGS}/${listingId}`
+    );
   },
 };
 
@@ -389,6 +421,8 @@ export const apiClient = {
   checkConnection: contractApi.checkConnection,
   initiateSocialMediaNftMint: contractApi.initiateSocialMediaNftMint,
   getAllCollections: contractApi.getAllCollections,
+  getUserNFTs: contractApi.getUserNFTs,
+  getListingById: contractApi.getListingById,
   logout: authUtils.logout,
   isAuthenticated: authUtils.isAuthenticated,
   getAccessToken: authUtils.getAccessToken,

@@ -34,6 +34,7 @@ import { Input } from '../ui/input';
 import Logo from '@/assets/svg/vertix-long.svg';
 import Image from 'next/image';
 import { mobileMenuVariants, backdropVariants } from '@/lib/animations';
+import { PAGE_ROUTES } from '@/lib/config';
 
 export const Navbar = () => {
   const { user, isAuthenticated, logout, connectWallet, disconnectWallet } =
@@ -215,16 +216,28 @@ export const Navbar = () => {
             </div>
 
             <div className='flex items-center gap-6'>
-              <Link href='/' className={getLinkClassName('/')}>
+              <Link
+                href={PAGE_ROUTES.MARKETPLACE_SECTION.MARKETPLACE}
+                className={getLinkClassName(
+                  PAGE_ROUTES.MARKETPLACE_SECTION.MARKETPLACE
+                )}
+              >
                 Marketplace
               </Link>
               <Link
-                href='/collections'
-                className={getLinkClassName('/collections')}
+                href={PAGE_ROUTES.COLLECTIONS_SECTION.COLLECTIONS}
+                className={getLinkClassName(
+                  PAGE_ROUTES.COLLECTIONS_SECTION.COLLECTIONS
+                )}
               >
                 Collections
               </Link>
-              <Link href='/creators' className={getLinkClassName('/creators')}>
+              <Link
+                href={PAGE_ROUTES.CREATORS_SECTION.CREATORS}
+                className={getLinkClassName(
+                  PAGE_ROUTES.CREATORS_SECTION.CREATORS
+                )}
+              >
                 Creators
               </Link>
               <Link href='/create' className={getLinkClassName('/create')}>

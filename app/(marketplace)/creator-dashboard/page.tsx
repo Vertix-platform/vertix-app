@@ -109,21 +109,9 @@ export default function CreatorDashboardPage() {
             className='space-y-6'
           >
             <TabsList className='grid w-full grid-cols-3'>
-              <TabsTrigger value='overview' className='flex items-center gap-2'>
-                <BarChart3 className='h-4 w-4' />
-                Overview
-              </TabsTrigger>
-              <TabsTrigger value='items' className='flex items-center gap-2'>
-                <Package className='h-4 w-4' />
-                Items
-              </TabsTrigger>
-              <TabsTrigger
-                value='collections'
-                className='flex items-center gap-2'
-              >
-                <Layers className='h-4 w-4' />
-                Collections
-              </TabsTrigger>
+              <TabsTrigger value='overview'>Overview</TabsTrigger>
+              <TabsTrigger value='items'>Items</TabsTrigger>
+              <TabsTrigger value='collections'>Collections</TabsTrigger>
             </TabsList>
 
             <TabsContent value='overview' className='space-y-6'>
@@ -133,10 +121,7 @@ export default function CreatorDashboardPage() {
             <TabsContent value='items' className='space-y-6'>
               <Card>
                 <CardHeader>
-                  <CardTitle className='flex items-center gap-2'>
-                    <Package className='h-5 w-5' />
-                    My NFTs
-                  </CardTitle>
+                  <CardTitle>My NFTs</CardTitle>
                   <CardDescription>
                     Manage your minted NFTs and their marketplace listings
                   </CardDescription>
@@ -150,10 +135,7 @@ export default function CreatorDashboardPage() {
             <TabsContent value='collections' className='space-y-6'>
               <Card>
                 <CardHeader>
-                  <CardTitle className='flex items-center gap-2'>
-                    <Layers className='h-5 w-5' />
-                    My Collections
-                  </CardTitle>
+                  <CardTitle>My Collections</CardTitle>
                   <CardDescription>
                     View and manage your NFT collections
                   </CardDescription>

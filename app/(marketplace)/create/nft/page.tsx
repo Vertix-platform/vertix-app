@@ -5,7 +5,7 @@ export default function MintNftPage() {
   return (
     <div className='min-h-screen'>
       <section className='container mx-auto px-4 py-8'>
-        <div className='max-w-4xl mx-auto'>
+        <div>
           {/* Header */}
           <div className='mb-8'>
             <PageBreadcrumb
@@ -17,9 +17,10 @@ export default function MintNftPage() {
               className='mb-4'
             />
             <div>
-              <h1 className='text-3xl font-bold'>Create Basic NFT</h1>
+              <h1 className='text-3xl font-bold'>Create an NFT</h1>
               <p className='text-muted-foreground'>
-                Create a new NFT with image upload and metadata generation.
+                Provide the details for your NFT. Upload an image and fill in
+                the metadata.
               </p>
             </div>
           </div>

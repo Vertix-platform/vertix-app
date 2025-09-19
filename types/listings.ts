@@ -115,6 +115,13 @@ export interface Collection {
   current_supply: number;
 }
 
+export interface CollectionsResponse {
+  collections: Collection[];
+  total_count: number;
+  limit: number;
+  offset: number;
+}
+
 export interface CreateCollectionRequest {
   wallet_address: string;
   name: string;

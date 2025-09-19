@@ -1,17 +1,10 @@
 'use client';
 
 import { useState, useRef } from 'react';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useAccount, useChainId } from 'wagmi';
+import { useChainId } from 'wagmi';
 import { usePrivy } from '@privy-io/react-auth';
 import {
   Upload,
@@ -25,6 +18,8 @@ import { useMintNft } from '@/hooks/use-mint-nft';
 import { isSupportedChain } from '@/lib/contracts/addresses';
 import { supportedChains } from '@/lib/wagmi/config';
 import { toast } from 'react-hot-toast';
+import { Textarea } from '@/components/ui/textarea';
+import Image from 'next/image';
 
 interface MintFormData {
   name: string;
@@ -36,8 +31,13 @@ interface MintFormData {
 }
 
 export function NFTCreationForm() {
-  const { authenticated, login: privyLogin, ready } = usePrivy();
-  const { address, isConnected } = useAccount();
+  const {
+    authenticated,
+    login: privyLogin,
+    ready,
+    user: privyUser,
+  } = usePrivy();
+
   const chainId = useChainId();
   const { uploadNFT, validateFile, clearError: clearIPFSError } = useIPFS();
   const {
@@ -117,7 +117,7 @@ export function NFTCreationForm() {
   };
 
   const handleMint = async () => {
-    if (!authenticated || !address) {
+    if (!authenticated || !privyUser?.wallet?.address) {
       toast.error('Please connect your wallet first');
       return;
     }
@@ -145,7 +145,7 @@ export function NFTCreationForm() {
 
       // Step 2: Mint NFT on blockchain via smart contract
       const result = await mintNft({
-        to: address,
+        to: privyUser?.wallet?.address,
         uri: uploadedData.metadataUri,
         metadataHash: uploadedData.metadataHash,
         royaltyBps: formData.royalty_bps ? parseInt(formData.royalty_bps) : 500,
@@ -198,17 +198,10 @@ export function NFTCreationForm() {
   };
 
   return (
-    <div className='space-y-6'>
+    <div className='space-y-6 flex flex-col max-w-[960px] flex-1'>
       {/* NFT Details Form */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Create Basic NFT</CardTitle>
-          <CardDescription>
-            Provide the details for your NFT. Upload an image and fill in the
-            metadata.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className='space-y-6'>
+      <div>
+        <div className='space-y-6'>
           {/* Image Upload */}
           <div className='space-y-2'>
             <Label>NFT Image *</Label>
@@ -254,112 +247,142 @@ export function NFTCreationForm() {
           </div>
 
           {/* NFT Name */}
-          <div className='space-y-2'>
-            <Label htmlFor='name'>NFT Name *</Label>
-            <Input
-              id='name'
-              placeholder='My Awesome NFT'
-              value={formData.name}
-              onChange={e => handleInputChange('name', e.target.value)}
-              disabled={isProcessing}
-            />
+          <div className='max-w-[480px]'>
+            <div className='min-w-40 space-y-2'>
+              <Label htmlFor='name'>NFT Name *</Label>
+              <Input
+                id='name'
+                placeholder='My Awesome NFT'
+                value={formData.name}
+                onChange={e => handleInputChange('name', e.target.value)}
+                disabled={isProcessing}
+                className='flex w-full min-w-0 flex-1 rounded-xl border h-14 p-[15px] pr-2 text-base font-normal leading-normal'
+              />
+            </div>
           </div>
 
           {/* NFT Description */}
-          <div className='space-y-2'>
-            <Label htmlFor='description'>Description *</Label>
-            <textarea
-              id='description'
-              placeholder='Describe your NFT...'
-              value={formData.description}
-              onChange={e => handleInputChange('description', e.target.value)}
-              disabled={isProcessing}
-              className='w-full min-h-[100px] p-3 border border-input rounded-md bg-background text-sm'
-            />
+          <div className='max-w-[480px]'>
+            <div className='min-w-40 space-y-2'>
+              <Label htmlFor='description'>Description *</Label>
+              <Textarea
+                id='description'
+                placeholder='Describe your NFT...'
+                value={formData.description}
+                onChange={e => handleInputChange('description', e.target.value)}
+                disabled={isProcessing}
+              />
+            </div>
           </div>
 
           {/* Attributes */}
-          <div className='space-y-2'>
-            <Label>Attributes</Label>
-            <div className='space-y-3'>
-              {formData.attributes.map((attr, index) => (
-                <div key={index} className='flex space-x-2'>
-                  <Input
-                    placeholder='Trait Type (e.g., Rarity)'
-                    value={attr.trait_type}
-                    onChange={e =>
-                      handleAttributeChange(index, 'trait_type', e.target.value)
-                    }
-                    disabled={isProcessing}
-                  />
-                  <Input
-                    placeholder='Value (e.g., Common)'
-                    value={attr.value}
-                    onChange={e =>
-                      handleAttributeChange(index, 'value', e.target.value)
-                    }
-                    disabled={isProcessing}
-                  />
-                  {formData.attributes.length > 1 && (
-                    <Button
-                      variant='outline'
-                      size='sm'
-                      onClick={() => removeAttribute(index)}
+          <div className=''>
+            <div className='space-y-2'>
+              <Label>Attributes</Label>
+              <div className='space-y-3'>
+                {formData.attributes.map((attr, index) => (
+                  <div key={index} className='flex space-x-2 items-center'>
+                    <Input
+                      placeholder='Trait Type (e.g., Rarity)'
+                      value={attr.trait_type}
+                      onChange={e =>
+                        handleAttributeChange(
+                          index,
+                          'trait_type',
+                          e.target.value
+                        )
+                      }
                       disabled={isProcessing}
-                    >
-                      <X className='h-4 w-4' />
-                    </Button>
-                  )}
-                </div>
-              ))}
-              <Button
-                variant='outline'
-                size='sm'
-                onClick={addAttribute}
-                disabled={isProcessing}
-              >
-                Add Attribute
-              </Button>
+                      className='flex w-full min-w-0 flex-1 rounded-xl border h-14 p-[15px] pr-2 text-base font-normal leading-normal'
+                    />
+                    <Input
+                      placeholder='Value (e.g., Common)'
+                      value={attr.value}
+                      onChange={e =>
+                        handleAttributeChange(index, 'value', e.target.value)
+                      }
+                      disabled={isProcessing}
+                      className='flex w-full min-w-0 flex-1 rounded-xl border h-14 p-[15px] pr-2 text-base font-normal leading-normal'
+                    />
+                    {formData.attributes.length > 1 && (
+                      <X
+                        onClick={() => removeAttribute(index)}
+                        aria-label='Remove attribute'
+                        className='h-4 w-4 hover:text-accent cursor-pointer'
+                        size={16}
+                      />
+                    )}
+                  </div>
+                ))}
+                <Button
+                  variant='outline'
+                  size='sm'
+                  onClick={addAttribute}
+                  disabled={isProcessing}
+                  className='h-10 px-4 py-2 min-w-[84px] max-w-[480px] rounded-xl'
+                >
+                  Add Attribute
+                </Button>
+              </div>
             </div>
           </div>
 
           {/* Royalty BPS */}
-          <div className='space-y-2'>
-            <Label htmlFor='royalty_bps'>Royalty (Basis Points)</Label>
-            <Input
-              id='royalty_bps'
-              type='number'
-              placeholder='500'
-              value={formData.royalty_bps}
-              onChange={e => handleInputChange('royalty_bps', e.target.value)}
-              disabled={isProcessing}
-            />
-            <p className='text-sm text-muted-foreground'>
-              Royalty percentage in basis points (500 = 5%, 1000 = 10%, max
-              1000)
-            </p>
+          <div className='max-w-[480px]'>
+            <div className='min-w-40 space-y-2'>
+              <Label htmlFor='royalty_bps'>Royalty (Basis Points)</Label>
+              <Input
+                id='royalty_bps'
+                type='number'
+                placeholder='500'
+                value={formData.royalty_bps}
+                onChange={e => handleInputChange('royalty_bps', e.target.value)}
+                disabled={isProcessing}
+                className='flex w-full min-w-0 flex-1 rounded-xl border h-14 p-[15px] pr-2 text-base font-normal leading-normal'
+              />
+              <p className='text-sm text-muted-foreground'>
+                Royalty percentage in basis points (500 = 5%, 1000 = 10%, max
+                1000)
+              </p>
+            </div>
           </div>
 
+          {/* NFT Preview */}
+          {formData.image && (
+            <div className='max-w-[480px]'>
+              <div className='min-w-40 space-y-2'>
+                <Label>NFT Preview</Label>
+              </div>
+              <div className='flex items-center space-x-4 my-2'>
+                <Image
+                  src={URL.createObjectURL(formData.image)}
+                  alt='NFT Preview'
+                  className='w-full h-[300] rounded-xl'
+                  width={480}
+                  height={480}
+                />
+              </div>
+              <p className='text-sm text-muted-foreground'>
+                This is how your NFT will appear when listed on the marketplace.
+                Please review the details above and ensure they are correct.
+              </p>
+            </div>
+          )}
+
           {/* Wallet & Network Info */}
-          {authenticated && isConnected && address ? (
+          {authenticated && privyUser?.wallet?.address ? (
             <div className='space-y-3'>
-              <div className='p-4 bg-muted rounded-lg'>
+              <div className=''>
                 <div className='text-sm font-medium mb-1'>
                   Connected Wallet:
                 </div>
                 <div className='text-sm text-muted-foreground font-mono'>
-                  {address}
+                  {privyUser?.wallet?.address}
                 </div>
               </div>
 
               {/* Network Status */}
-              <div
-                className={`p-4 rounded-lg border ${
-                  isSupportedChain(chainId)
-                    ? 'bg-green-50 border-green-200 dark:bg-green-950 dark:border-green-800'
-                    : 'bg-red-50 border-red-200 dark:bg-red-950 dark:border-red-800'
-                }`}
-              >
+              <div>
                 <div className='flex items-center space-x-2'>
                   {isSupportedChain(chainId) ? (
                     <>
@@ -414,7 +437,7 @@ export function NFTCreationForm() {
               )}
             </div>
           ) : (
-            <div className='p-4 bg-amber-50 border border-amber-200 rounded-lg dark:bg-amber-950 dark:border-amber-800'>
+            <div className='max-w-[480px] p-4 bg-amber-50 border border-amber-200 rounded-xl dark:bg-amber-950 dark:border-amber-800'>
               <div className='flex items-center space-x-2'>
                 <Wallet className='w-4 h-4 text-amber-600' />
                 <span className='text-sm font-medium text-amber-800 dark:text-amber-200'>
@@ -428,43 +451,47 @@ export function NFTCreationForm() {
           )}
 
           {/* Mint Button */}
-          <Button
-            onClick={handleMint}
-            disabled={
-              !canMint ||
-              !formData.image ||
-              !formData.name.trim() ||
-              !formData.description.trim() ||
-              isProcessing
-            }
-            className='w-full'
-            size='lg'
-          >
-            {isProcessing ? (
-              <>
-                <div className='animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2' />
-                Creating NFT...
-              </>
-            ) : (
-              <>
-                <Upload className='h-4 w-4 mr-2' />
-                Create NFT
-              </>
-            )}
-          </Button>
+          {authenticated && privyUser?.wallet?.address && (
+            <div className='flex lg:justify-end'>
+              <Button
+                onClick={handleMint}
+                disabled={
+                  !canMint ||
+                  !formData.image ||
+                  !formData.name.trim() ||
+                  !formData.description.trim() ||
+                  isProcessing
+                }
+                className='flex w-full lg:min-w-[84px] lg:max-w-[480px] cursor-pointer items-center justify-center rounded-full h-12 px-5'
+              >
+                {isProcessing ? (
+                  <>
+                    <div className='animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2' />
+                    Creating NFT...
+                  </>
+                ) : (
+                  <>
+                    <Upload className='h-4 w-4 mr-2' />
+                    Create NFT
+                  </>
+                )}
+              </Button>
+            </div>
+          )}
 
           {!authenticated && (
-            <div className='text-center space-y-4'>
-              <p className='text-sm text-muted-foreground'>
-                Please connect your wallet to create an NFT
-              </p>
-              <Button onClick={privyLogin} disabled={!ready}>
+            <div>
+              <Button
+                onClick={privyLogin}
+                disabled={!ready}
+                className='h-10 px-4 py-2 w-full lg:min-w-[84px] lg:max-w-[480px] rounded-xl'
+              >
                 Connect Wallet
               </Button>
             </div>
           )}
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 }

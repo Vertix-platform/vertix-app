@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { useAccount, useChainId, useSwitchChain } from 'wagmi';
+import { useChainId, useSwitchChain } from 'wagmi';
 import { networks } from '@/lib/networks';
 import { Button } from '@/components/ui/button';
 import { NetworkLogo } from '@/components/ui/network-logo';
@@ -15,6 +15,7 @@ import { ChevronDown, Loader2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { RiCheckFill } from '@remixicon/react';
 import type { Network } from '@/types/network';
+import { usePrivy } from '@privy-io/react-auth';
 
 interface NetworkSelectorProps {
   variant?: 'default' | 'outline' | 'ghost';
@@ -27,7 +28,7 @@ export const NetworkSelector: React.FC<NetworkSelectorProps> = ({
   size = 'sm',
   className = '',
 }) => {
-  const { isConnected } = useAccount();
+  const { authenticated, user: privyUser } = usePrivy();
   const chainId = useChainId();
   const { switchChain, isPending } = useSwitchChain();
 
@@ -38,7 +39,7 @@ export const NetworkSelector: React.FC<NetworkSelectorProps> = ({
     if (network.chain.id === chainId) return;
 
     try {
-      if (switchChain && isConnected) {
+      if (switchChain && authenticated && privyUser?.wallet?.address) {
         switchChain({ chainId: network.chain.id });
         toast.success(`Switching to ${network.chain.name}...`);
       } else {
@@ -57,7 +58,7 @@ export const NetworkSelector: React.FC<NetworkSelectorProps> = ({
           variant={variant}
           size={size}
           className={`flex items-center gap-2 ${className}`}
-          disabled={isPending}
+          disabled={isPending || !authenticated || !privyUser?.wallet?.address}
         >
           {isPending ? (
             <Loader2 className='h-4 w-4 animate-spin' />
@@ -77,7 +78,12 @@ export const NetworkSelector: React.FC<NetworkSelectorProps> = ({
           <DropdownMenuItem
             key={network.chain.id}
             onClick={() => handleNetworkSwitch(network)}
-            disabled={network.chain.id === chainId || isPending}
+            disabled={
+              network.chain.id === chainId ||
+              isPending ||
+              !authenticated ||
+              !privyUser?.wallet?.address
+            }
             className={`flex items-center gap-3 ${
               network.chain.id === chainId ? 'bg-gray-800 !text-white' : ''
             }`}

@@ -1,12 +1,5 @@
 'use client';
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Image as ImageIcon, Hash } from 'lucide-react';
 import Link from 'next/link';
@@ -59,7 +52,7 @@ export function CollectionsGrid({ collections }: CollectionsGridProps) {
         <p className='text-gray-500 mb-6'>
           Be the first to create a collection on the platform!
         </p>
-        <Link href='/create/collection'>
+        <Link href='/create/create-collection'>
           <Button size='lg'>Create Your First Collection</Button>
         </Link>
       </div>
@@ -67,7 +60,7 @@ export function CollectionsGrid({ collections }: CollectionsGridProps) {
   }
 
   return (
-    <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'>
+    <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4'>
       {collections.map(collection => (
         <Link
           href={`/collections/${collection.collection_id}`}
@@ -75,25 +68,27 @@ export function CollectionsGrid({ collections }: CollectionsGridProps) {
         >
           <CardContainer
             key={collection.collection_id}
-            className='hover:shadow-lg transition-shadow bg-card text-card-foreground border rounded-xl'
+            className='hover:shadow-lg transition-shadow bg-card text-card-foreground border rounded-xl h-full min-w-full'
           >
-            <CardBody className='relative group/card border-black/[0.1] w-auto h-auto rounded-xl p-2 border'>
-              <CardItem translateZ='100' className='w-full mt-4'>
+            <CardBody className='relative group/card border-black/[0.1] h-full rounded-xl p-2 border'>
+              <CardItem translateZ='100' className='w-full'>
                 {collection.image && !imageErrors[collection.collection_id] ? (
-                  <Image
-                    src={getImageUrl(
-                      collection.image,
-                      collection.collection_id
-                    )}
-                    alt={collection.name}
-                    width={100}
-                    height={100}
-                    className='w-full h-full object-cover rounded-lg'
-                    unoptimized
-                    onError={() => handleImageError(collection.collection_id)}
-                  />
+                  <div className='w-full h-[200px] rounded-lg overflow-hidden'>
+                    <Image
+                      src={getImageUrl(
+                        collection.image,
+                        collection.collection_id
+                      )}
+                      alt={collection.name}
+                      width={100}
+                      height={100}
+                      className='w-full h-full object-cover'
+                      unoptimized
+                      onError={() => handleImageError(collection.collection_id)}
+                    />
+                  </div>
                 ) : (
-                  <div className='w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100'>
+                  <div className='w-full h-[200px] flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100'>
                     <ImageIcon className='w-12 h-12 text-gray-400' />
                   </div>
                 )}

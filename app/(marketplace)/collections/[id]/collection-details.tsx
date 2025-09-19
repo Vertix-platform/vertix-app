@@ -68,7 +68,7 @@ export function CollectionDetails({ id }: { id: string }) {
         setLoading(true);
         setError(null);
         const response = await apiClient.getAllCollections();
-        const collections = response.data || [];
+        const collections = response.data?.collections || [];
         const foundCollection = collections.find(
           c => c.collection_id.toString() === id
         );

@@ -18,7 +18,7 @@ export default function ExplorePage() {
       try {
         setLoading(true);
         const response = await apiClient.getAllCollections();
-        const data = response.data || [];
+        const data = response.data?.collections || [];
         setCollections(data);
       } catch (error) {
         console.error('Error loading collections preview:', error);
@@ -36,8 +36,11 @@ export default function ExplorePage() {
       return <CollectionsLoadingSkeleton />;
     }
 
+    // Ensure collections is an array before slicing
+    const collectionsArray = Array.isArray(collections) ? collections : [];
+
     // Only show first 4 collections as preview
-    const previewCollections = collections.slice(0, 4);
+    const previewCollections = collectionsArray.slice(0, 4);
 
     if (previewCollections.length === 0) {
       return null;

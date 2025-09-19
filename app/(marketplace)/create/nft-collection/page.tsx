@@ -19,7 +19,7 @@ export default function MintToCollectionPage() {
         setLoading(true);
         setError(null);
         const response = await apiClient.getAllCollections();
-        const data = response.data || [];
+        const data = response.data?.collections || [];
         setCollections(data);
       } catch (err) {
         const errorMessage =

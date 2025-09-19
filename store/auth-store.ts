@@ -39,6 +39,9 @@ export const useAuthStore = create<AuthStore>()(
           refreshToken: null,
           error: null,
         });
+
+        // Clear persisted state from localStorage
+        localStorage.removeItem('auth-storage');
       },
 
       setPrivyUser: (privyUser: PrivyUser | null) => {

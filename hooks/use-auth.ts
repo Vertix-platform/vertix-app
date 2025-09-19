@@ -209,7 +209,7 @@ export const useAuth = () => {
     } finally {
       setLoading(false);
     }
-  }, [setLoading, setError, clearError]);
+  }, [setLoading, setError, clearError, router]);
 
   // Handle Google OAuth callback
   const handleGoogleCallback = useCallback(
@@ -247,9 +247,17 @@ export const useAuth = () => {
 
   // Handle logout
   const handleLogout = useCallback(() => {
+    // Clear auth store
     logout();
+
+    // Clear Privy session
     privyLogout();
-  }, [logout, privyLogout]);
+
+    // Clear local session and redirect to home
+    setTimeout(() => {
+      router.push('/');
+    }, 100);
+  }, [logout, privyLogout, router]);
 
   // Handle wallet disconnection
   const disconnectWallet = useCallback(async () => {
